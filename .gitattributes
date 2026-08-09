@@ -1,0 +1,24 @@
+* text=auto
+
+*.json text eol=lf
+*.lock text eol=lf
+*.md text eol=lf
+*.mjs text eol=lf
+*.py text eol=lf
+*.rs text eol=lf
+*.toml text eol=lf
+*.ts text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.png binary
+*.wasm binary
+*.webp binary
+
+# Evidence and generated rankings are byte-addressed. Never normalize them.
+/releases/** -text
+/benchmarks/rankings/** -text

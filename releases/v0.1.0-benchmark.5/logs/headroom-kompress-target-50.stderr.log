@@ -1,0 +1,2 @@
+[transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+Content detection using pure-Python backend (native Magika/ONNX detector is unsafe by default on Windows; override with HEADROOM_DETECT_BACKEND=rust).

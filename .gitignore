@@ -1,0 +1,59 @@
+# Rust build and coverage output
+/target/
+/tmp/
+*.profraw
+
+# Benchmark environments and downloaded payloads
+/benchmarks/.cache/
+/benchmarks/.venv*/
+
+# JavaScript dependencies
+**/node_modules/
+
+# Python caches and environments
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.tox/
+**/.nox/
+**/.venv/
+**/build/
+**/*.egg-info/
+*.py[cod]
+
+# Repository-development assistant controls
+**/.codex/
+**/.claude/
+**/.aider/
+**/.agents/
+**/.cline/
+**/.continue/
+**/.cursor/
+**/.gemini/
+**/.roo/
+**/.windsurf/
+**/.aider.conf.yml
+**/.aiderignore
+**/.clinerules
+**/.cursorrules
+**/.windsurfrules
+**/AGENTS.md
+**/CLAUDE.md
+**/CODEX.md
+**/GEMINI.md
+**/copilot-instructions.md
+**/*.agent.md
+**/*.chatmode.md
+**/*.instructions.md
+**/*.prompt.md
+
+# Editor and operating-system files
+/.idea/
+/.vscode/
+.DS_Store
+
+# Runtime logs are local by default. Benchmark release logs are intentional,
+# immutable evidence and must remain eligible for version control.
+*.log
+!/releases/**/*.log

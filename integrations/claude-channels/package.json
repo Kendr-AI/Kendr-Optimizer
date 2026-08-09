@@ -1,0 +1,45 @@
+{
+  "name": "@kendr/optimizer-claude-channels",
+  "version": "0.1.0",
+  "description": "Source-side Claude Code Channels notification optimizer for Kendr Optimizer",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnpredictablePrashant/KendrOptimizer.git",
+    "directory": "integrations/claude-channels"
+  },
+  "homepage": "https://github.com/UnpredictablePrashant/KendrOptimizer/tree/main/integrations/claude-channels#readme",
+  "bugs": {
+    "url": "https://github.com/UnpredictablePrashant/KendrOptimizer/issues"
+  },
+  "publishConfig": { "access": "public" },
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "LICENSE",
+    "NOTICE",
+    "capabilities.json",
+    "dist/index.d.ts",
+    "dist/index.js",
+    "dist/index.js.map",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/index.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.1",
+    "typescript": "7.0.2"
+  }
+}

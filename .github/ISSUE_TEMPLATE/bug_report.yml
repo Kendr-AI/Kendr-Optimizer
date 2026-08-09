@@ -1,0 +1,77 @@
+name: Bug report
+description: Report reproducible incorrect behavior or a regression.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Remove prompts, recovery capsules, credentials, and other sensitive data
+        before submitting. Security vulnerabilities belong in a private advisory.
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I searched existing issues for this problem.
+          required: true
+        - label: I agree to follow the Code of Conduct.
+          required: true
+        - label: This report does not contain sensitive application data.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Provide the crate version, release tag, or full commit hash.
+      placeholder: 0.1.0 or commit hash
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Interface
+      options:
+        - Rust library
+        - CLI
+        - Loopback HTTP service
+        - Host integration
+        - Benchmark tooling
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem
+      description: Explain what went wrong and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include deterministic steps and a minimized, redacted input.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and receipt
+      description: Include the redacted receipt and relevant error output.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, Rust version, tokenizer profile, and upstream harness version when applicable.
+    validations:
+      required: true
+

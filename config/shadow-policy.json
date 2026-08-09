@@ -1,0 +1,15 @@
+{
+  "risk_ceiling": "extractive",
+  "min_gain_tokens": 8,
+  "min_gain_percent": 1,
+  "latency_budget_ms": 50,
+  "preserve_cache_prefix": true,
+  "shadow": true,
+  "preserve_recent_messages": 6,
+  "max_tool_result_chars": 24000,
+  "enable_tool_selection": true,
+  "enable_lossy_tool_output": true,
+  "enable_generation_policy": true,
+  "min_expected_output_saving_tokens": 32,
+  "enabled_engines": []
+}

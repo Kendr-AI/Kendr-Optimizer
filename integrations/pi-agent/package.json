@@ -1,0 +1,53 @@
+{
+  "name": "@kendr/optimizer-pi",
+  "version": "0.1.0",
+  "description": "Provider-neutral Pi extension for the Kendr transform-only optimizer",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnpredictablePrashant/KendrOptimizer.git",
+    "directory": "integrations/pi-agent"
+  },
+  "homepage": "https://github.com/UnpredictablePrashant/KendrOptimizer/tree/main/integrations/pi-agent#readme",
+  "bugs": {
+    "url": "https://github.com/UnpredictablePrashant/KendrOptimizer/issues"
+  },
+  "publishConfig": { "access": "public" },
+  "keywords": ["pi-package", "prompt-optimization", "token-optimization"],
+  "engines": {
+    "node": ">=22.19"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "LICENSE",
+    "NOTICE",
+    "capabilities.json",
+    "dist/index.d.ts",
+    "dist/index.js",
+    "dist/index.js.map",
+    "README.md"
+  ],
+  "pi": {
+    "extensions": ["./dist/index.js"]
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/index.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "0.84.1",
+    "@types/node": "22.20.1",
+    "typescript": "7.0.2"
+  }
+}

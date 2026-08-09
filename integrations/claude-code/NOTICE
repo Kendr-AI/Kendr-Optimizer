@@ -1,0 +1,6 @@
+Kendr Optimizer
+Copyright 2026 Kendr Optimizer contributors
+
+This product is independently implemented. Research references and their
+licenses are documented in docs/provenance.md. No third-party optimizer source
+code is copied into the production engine.

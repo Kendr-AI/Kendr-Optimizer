@@ -1,0 +1,53 @@
+{
+  "schema_version": "kendr.harness-verification/v1",
+  "verified_at": "2026-08-08",
+  "claim": "Contract-level adapter verification against immutable audited harness pins; not a universal future-version or full provider end-to-end certification.",
+  "results": [
+    {
+      "harness": "claude-code",
+      "command": "npm test",
+      "tests_passed": 6,
+      "tests_failed": 0
+    },
+    {
+      "harness": "claude-code-channels",
+      "command": "npm test",
+      "tests_passed": 6,
+      "tests_failed": 0
+    },
+    {
+      "harness": "pi-agent",
+      "command": "npm test",
+      "tests_passed": 8,
+      "tests_failed": 0
+    },
+    {
+      "harness": "opencode",
+      "command": "npm test",
+      "tests_passed": 11,
+      "tests_failed": 0
+    },
+    {
+      "harness": "openclaw",
+      "command": "npm test",
+      "tests_passed": 7,
+      "tests_failed": 0
+    },
+    {
+      "harness": "hermes-agent",
+      "command": "python -m unittest discover -s integrations/hermes-agent/tests -v (with HERMES_AGENT_SOURCE at the audited checkout)",
+      "tests_passed": 13,
+      "tests_failed": 0
+    },
+    {
+      "harness": "nanoclaw",
+      "command": "guarded patch check/install/idempotence/remove plus compiled node:test suite against the audited poll-loop source",
+      "tests_passed": 8,
+      "tests_failed": 0
+    }
+  ],
+  "totals": {
+    "tests_passed": 59,
+    "tests_failed": 0
+  }
+}

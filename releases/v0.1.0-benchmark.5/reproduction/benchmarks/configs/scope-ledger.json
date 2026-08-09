@@ -1,0 +1,56 @@
+{
+  "schema_version": "kendr.peer-scope-ledger/v1",
+  "reviewed_at": "2026-08-07",
+  "entries": [
+    {
+      "id": "selective-context",
+      "status": "not_run_environment_incompatible",
+      "scope": "prompt_context",
+      "reason": "The official 0.1.4 package hard-pins spaCy 3.2.0 and Click 8.0.4 and requires a Python 3.9-era isolated stack; this Windows host exposes only Python 3.11. No source patch was applied.",
+      "future_runner": "Run the pinned release in a Python 3.9 Linux container with en_core_web_sm and publish the image digest."
+    },
+    {
+      "id": "recomp",
+      "status": "not_run_environment_incompatible",
+      "scope": "rag_only",
+      "reason": "The official extractive runner hardcodes CUDA, pins an older Linux-oriented torch stack, and the published abstractive weights lack model-card license metadata. This Windows CPU run did not silently patch it.",
+      "future_runner": "Use a pinned Linux CUDA image on the matching NQ, TQA, or HotpotQA datasets after weight-license review."
+    },
+    {
+      "id": "pctoolkit",
+      "status": "catalogued_not_scored",
+      "scope": "meta_harness",
+      "reason": "PCToolkit wraps other compression algorithms; ranking it as another optimizer would double-count those methods."
+    },
+    {
+      "id": "omniroute",
+      "status": "pure_optimizer_stack_executed",
+      "scope": "prompt_context_and_tool_output",
+      "reason": "Only the pinned RTK-then-Caveman transformation modules are executed. OmniRoute's gateway, routing, authentication, and provider paths remain out of scope."
+    },
+    {
+      "id": "caveman-compression",
+      "status": "catalogued_not_scored",
+      "scope": "prose_prompt",
+      "reason": "This separately named project is not the Caveman coding-agent skill requested for the generation-policy track and was not silently substituted for it."
+    },
+    {
+      "id": "caveman",
+      "status": "upstream_snapshot_remeasured_no_fresh_model_run",
+      "scope": "future_model_output",
+      "reason": "A fresh Caveman A/B requires a target model and provider/local inference. No paid API call was authorized; the release remeasures the complete upstream committed snapshot and includes every output."
+    },
+    {
+      "id": "llmlingua-original-canonical",
+      "status": "substituted_feasibility_profile",
+      "scope": "prompt_context",
+      "reason": "The canonical default is a 6.7B Llama checkpoint and is impractical on this CPU-only host. The algorithm is run with GPT-2 and labeled noncanonical."
+    },
+    {
+      "id": "longllmlingua-original-canonical",
+      "status": "substituted_feasibility_profile",
+      "scope": "rag_only",
+      "reason": "The same GPT-2 feasibility substitution is used and only the authored retrieved-document case is eligible."
+    }
+  ]
+}

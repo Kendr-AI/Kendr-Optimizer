@@ -1,0 +1,4 @@
+dist/*.test.*
+dist/*.map
+src/
+tsconfig.json

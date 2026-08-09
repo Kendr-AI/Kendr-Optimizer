@@ -1,0 +1,56 @@
+{
+  "name": "@kendr/optimizer-opencode",
+  "version": "0.1.0",
+  "description": "Fail-open OpenCode V1 plugin for the Kendr transform-only optimizer",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnpredictablePrashant/KendrOptimizer.git",
+    "directory": "integrations/opencode"
+  },
+  "homepage": "https://github.com/UnpredictablePrashant/KendrOptimizer/tree/main/integrations/opencode#readme",
+  "bugs": {
+    "url": "https://github.com/UnpredictablePrashant/KendrOptimizer/issues"
+  },
+  "publishConfig": { "access": "public" },
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js"
+    },
+    "./adapter": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "LICENSE",
+    "NOTICE",
+    "capabilities.json",
+    "dist/index.d.ts",
+    "dist/index.js",
+    "dist/index.js.map",
+    "dist/plugin.d.ts",
+    "dist/plugin.js",
+    "dist/plugin.js.map",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/index.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": ">=1.18.15 <2"
+  },
+  "devDependencies": {
+    "@opencode-ai/plugin": "1.18.15",
+    "@types/node": "22.20.1",
+    "typescript": "7.0.2"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": "kendr.publication-sanitization/v1",
+  "policy": "known private roots and account identifiers are replaced by deterministic public tokens",
+  "public_tokens": [
+    "<APP_DATA>",
+    "<CAVEMAN_REPO>",
+    "<HEADROOM_PYTHON>",
+    "<HF_CACHE>",
+    "<KENDR_BINARY>",
+    "<LLMLINGUA_PYTHON>",
+    "<LOCAL_APP_DATA>",
+    "<LOCAL_FILE_URI>",
+    "<OMNIROUTE_NODE>",
+    "<OMNIROUTE_REPO>",
+    "<PROJECT_ROOT>",
+    "<PYTHON>",
+    "<RELEASE_ROOT>",
+    "<RTK_BINARY>",
+    "<TEMP_ROOT>",
+    "<TIKTOKEN_CACHE>",
+    "<USER_HOME>",
+    "<USER_NAME>"
+  ],
+  "sanitization_passes": 1,
+  "files_changed": [
+    "evidence/bootstrap/headroom-0.34.0/install.log",
+    "evidence/bootstrap/headroom-0.34.0/pip-freeze.txt",
+    "evidence/bootstrap/headroom-0.34.0/validation-manifest.json",
+    "evidence/bootstrap/rtk-0.45.0/runtime-verification.json",
+    "evidence/bootstrap/rtk-0.45.0/validation-manifest.json",
+    "logs/build-corpus.stdout.log",
+    "logs/cargo-build-release.stderr.log",
+    "logs/execution.json",
+    "logs/headroom-environment.stdout.log",
+    "logs/llmlingua-environment.stdout.log",
+    "runs/caveman-upstream-snapshot.json",
+    "runs/rtk-0.45.0.json"
+  ],
+  "replacements": 145,
+  "private_markers_after_sanitization": 0
+}

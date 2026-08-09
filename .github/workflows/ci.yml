@@ -1,0 +1,132 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test repository hygiene checker
+        run: python3 -m unittest discover -s scripts/tests -p 'test_*.py'
+      - name: Check repository hygiene
+        run: python3 scripts/check_repository_hygiene.py
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88.0
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace --locked
+
+  evidence-and-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test release hardening
+        run: python -m unittest discover -s benchmarks/runners/tests -p 'test_*.py'
+      - name: Verify canonical benchmark release
+        run: python benchmarks/runners/verify_release.py --release releases/v0.1.0-benchmark.5 --require-complete-attempts
+      - name: Verify derived rankings
+        run: python benchmarks/runners/rank_release.py --release releases/v0.1.0-benchmark.5 --output benchmarks/rankings/v0.1.0-benchmark.5 --check
+      - name: Build whitepaper from authoritative Markdown
+        run: |
+          python -m pip install -r scripts/requirements-docs.txt
+          python scripts/build_whitepaper.py --output "${{ runner.temp }}/kendr-optimizer-whitepaper.pdf"
+      - name: Verify committed whitepaper source identity
+        run: python scripts/check_whitepaper_pdf.py
+
+  node-adapters:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter:
+          - claude-channels
+          - claude-code
+          - openclaw
+          - opencode
+          - pi-agent
+    defaults:
+      run:
+        working-directory: integrations/${{ matrix.adapter }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: integrations/${{ matrix.adapter }}/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - name: Verify package legal files
+        run: |
+          npm pack --dry-run --json > "${RUNNER_TEMP}/npm-pack.json"
+          node -e "const p=require(process.env.RUNNER_TEMP + '/npm-pack.json')[0]; const f=new Set(p.files.map(x=>x.path)); for (const n of ['LICENSE','NOTICE']) if (!f.has(n)) throw new Error('missing '+n)"
+
+  hermes-adapter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out audited Hermes Agent source
+        uses: actions/checkout@v4
+        with:
+          repository: NousResearch/hermes-agent
+          ref: 3c27eb6234bf91b8ceee9e9071591b31e9b148cb
+          path: .upstream/hermes-agent
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run adapter and pinned upstream-contract tests
+        env:
+          HERMES_AGENT_SOURCE: ${{ github.workspace }}/.upstream/hermes-agent
+        run: |
+          python -m pip install PyYAML==6.0.3
+          python -m unittest discover -s integrations/hermes-agent/tests -v
+      - name: Verify wheel legal files
+        run: |
+          python -m pip wheel --no-deps --wheel-dir "${RUNNER_TEMP}/wheels" integrations/hermes-agent
+          python -c "import glob,zipfile; p=glob.glob('${{ runner.temp }}/wheels/*.whl')[0]; n=zipfile.ZipFile(p).namelist(); assert any(x.endswith('/licenses/LICENSE') for x in n); assert any(x.endswith('/licenses/NOTICE') for x in n)"
+
+  nanoclaw-adapter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out audited NanoClaw source
+        uses: actions/checkout@v4
+        with:
+          repository: nanocoai/nanoclaw
+          ref: 743e32df4e6c05f3725c17cb2ec11f2b65079eec
+          path: .upstream/nanoclaw
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.12
+      - name: Install and verify the guarded source integration
+        run: |
+          node integrations/nanoclaw/skill/assets/apply-patch.mjs --check-source .upstream/nanoclaw
+          cp integrations/nanoclaw/skill/assets/kendr-optimizer.ts .upstream/nanoclaw/container/agent-runner/src/kendr-optimizer.ts
+          cp integrations/nanoclaw/skill/assets/kendr-optimizer.test.ts .upstream/nanoclaw/container/agent-runner/src/kendr-optimizer.test.ts
+          node integrations/nanoclaw/skill/assets/apply-patch.mjs .upstream/nanoclaw
+          node integrations/nanoclaw/skill/assets/apply-patch.mjs .upstream/nanoclaw
+          node integrations/nanoclaw/skill/assets/apply-patch.mjs --check .upstream/nanoclaw
+          (cd .upstream/nanoclaw/container/agent-runner && bun test src/kendr-optimizer.test.ts)
+          node integrations/nanoclaw/skill/assets/apply-patch.mjs --remove .upstream/nanoclaw
+          node integrations/nanoclaw/skill/assets/apply-patch.mjs --check-source .upstream/nanoclaw

@@ -1,0 +1,51 @@
+{
+  "schema_version": "kendr.harness-lock/v1",
+  "reviewed_at": "2026-08-07",
+  "meaning_of_compatible": "An adapter or documented source integration exists for the surfaces the host exposes; unsupported surfaces remain explicit.",
+  "harnesses": [
+    {
+      "id": "claude-code",
+      "version": "2.1.224",
+      "commit": "66edf5358349356774812264b75b8ea792f0d0a3",
+      "support": "partial",
+      "reason": "Can replace successful tool output, but cannot replace current prompt, full history, tool catalog, or generation settings."
+    },
+    {
+      "id": "claude-code-channels",
+      "version": "research-preview in Claude Code 2.1.224",
+      "support": "source-integration",
+      "reason": "A channel author can optimize notification content before emission; a generic plugin cannot intercept existing channel servers."
+    },
+    {
+      "id": "pi-agent",
+      "version": "0.84.1",
+      "commit": "53fa77ccd8a279eb87e92294ef3687b03ff80112",
+      "support": "full-major-surfaces"
+    },
+    {
+      "id": "opencode",
+      "version": "1.18.15",
+      "commit": "d7b115f623760e68a4749d16508a9eca350f246f",
+      "support": "full-major-surfaces-with-experimental-hooks"
+    },
+    {
+      "id": "hermes-agent",
+      "version": "0.20.0 (release tag v2026.8.3)",
+      "commit": "3c27eb6234bf91b8ceee9e9071591b31e9b148cb",
+      "support": "full-main-agent-surfaces"
+    },
+    {
+      "id": "openclaw",
+      "version": "2026.7.2",
+      "commit": "60fc2fe64d8ec2988a555a638dc1074d31e5760b",
+      "support": "full-context-engine-partial-other-hooks"
+    },
+    {
+      "id": "nanoclaw",
+      "version": "unreleased-main",
+      "commit": "743e32df4e6c05f3725c17cb2ec11f2b65079eec",
+      "support": "source-patch-partial",
+      "reason": "No stable plugin middleware; generic provider exposes inbound formatted prompt strings but not history or tools."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "tokens_before": 1930,
+  "tokens_after": 1145,
+  "tokens_saved": 785,
+  "compression_ratio": 0.4067357512953368,
+  "transforms_applied": [
+    "router:smart_crusher:0.35"
+  ],
+  "message_count": 1,
+  "output_content_type": "str",
+  "output_preview": "\"[80]{id:int,message:string,region:string,service:string,status:string}\\n0,heartbeat healthy,us-east-1,api,ok\\n1,heartbeat healthy,us-east-1,api,ok\\n2,heartbeat healthy,us-east-1,api,ok\\n3,heartbeat healthy,us-east-1,api,ok\\n4,heartbeat hea"
+}

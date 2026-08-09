@@ -1,0 +1,6 @@
+{
+    "exit_code":  0,
+    "surface":  "stdin-named-filter",
+    "filter":  "cargo-test",
+    "output_lines":  10
+}

@@ -1,0 +1,117 @@
+{
+  "schema_version": "kendr.competitors/v1",
+  "production_dependencies": false,
+  "policy": "Every runner must pin an official release or commit before execution. Missing and unsupported results are retained.",
+  "competitors": [
+    {
+      "id": "headroom",
+      "name": "Headroom",
+      "source": "https://github.com/headroomlabs-ai/headroom",
+      "license": "Apache-2.0",
+      "class": "structured_context_optimizer",
+      "surfaces": ["json", "logs", "code", "diffs", "html", "tables", "conversation_history"],
+      "revision": "9fd5ae3d530b5d9eb9e9127e413235a5a3b2faf6",
+      "benchmark_only": true
+    },
+    {
+      "id": "rtk",
+      "name": "RTK",
+      "source": "https://github.com/rtk-ai/rtk",
+      "license": "Apache-2.0",
+      "class": "command_output_optimizer",
+      "surfaces": ["shell_output", "git", "tests", "builds", "logs"],
+      "revision": "b34be37caf3796b69a50952a28e60e32b5daad43",
+      "benchmark_only": true
+    },
+    {
+      "id": "caveman-skill",
+      "name": "Caveman coding-agent skill",
+      "source": "https://github.com/JuliusBrussee/caveman",
+      "license": "MIT",
+      "class": "generation_policy",
+      "surfaces": ["future_model_output"],
+      "revision": "fcf7663366c217dc8f334a11028de52ed950ceab",
+      "benchmark_only": true
+    },
+    {
+      "id": "caveman-compression",
+      "name": "Caveman Compression",
+      "source": "https://github.com/wilpel/caveman-compression",
+      "license": "MIT",
+      "class": "prompt_compressor",
+      "surfaces": ["prose_prompt"],
+      "revision": null,
+      "benchmark_only": true
+    },
+    {
+      "id": "llmlingua",
+      "name": "LLMLingua",
+      "source": "https://github.com/microsoft/LLMLingua",
+      "license": "MIT",
+      "class": "causal_lm_prompt_compressor",
+      "surfaces": ["prose_prompt", "retrieved_context"],
+      "revision": "a411a3fa61df74411157b2512b592d5357bd8f17",
+      "benchmark_only": true
+    },
+    {
+      "id": "longllmlingua",
+      "name": "LongLLMLingua",
+      "source": "https://github.com/microsoft/LLMLingua",
+      "license": "MIT",
+      "class": "query_aware_long_context_compressor",
+      "surfaces": ["retrieved_documents", "long_context"],
+      "revision": "a411a3fa61df74411157b2512b592d5357bd8f17",
+      "benchmark_only": true
+    },
+    {
+      "id": "llmlingua2",
+      "name": "LLMLingua-2",
+      "source": "https://github.com/microsoft/LLMLingua",
+      "license": "MIT",
+      "class": "token_classification_prompt_compressor",
+      "surfaces": ["prose_prompt", "meeting_transcripts"],
+      "revision": "a411a3fa61df74411157b2512b592d5357bd8f17",
+      "benchmark_only": true
+    },
+    {
+      "id": "selective-context",
+      "name": "Selective Context",
+      "source": "https://github.com/liyucheng09/Selective_Context",
+      "license": "MIT",
+      "class": "self_information_prompt_compressor",
+      "surfaces": ["prose_prompt", "documents"],
+      "revision": "3074343653bbf3559a87a588667e843744bc6f2a",
+      "benchmark_only": true
+    },
+    {
+      "id": "recomp",
+      "name": "RECOMP",
+      "source": "https://github.com/carriex/recomp",
+      "license": "MIT",
+      "class": "rag_context_compressor",
+      "surfaces": ["retrieved_documents"],
+      "revision": "51d4432151efb3275257a9407dc71d1e5ec6634d",
+      "benchmark_only": true
+    },
+    {
+      "id": "pctoolkit",
+      "name": "PCToolkit",
+      "source": "https://github.com/3DAgentWorld/Toolkit-for-Prompt-Compression",
+      "license": "MIT",
+      "class": "benchmark_wrapper",
+      "surfaces": ["prompt_compression_methods"],
+      "revision": "e38d6d80c1bdc1eb4feb8fe008e0aad48003a006",
+      "benchmark_only": true
+    },
+    {
+      "id": "omniroute-deterministic-stack",
+      "name": "OmniRoute deterministic RTK + Caveman stack",
+      "source": "https://github.com/diegosouzapw/OmniRoute",
+      "license": "MIT",
+      "class": "composite_payload_optimizer",
+      "surfaces": ["prose_prompt", "tool_output"],
+      "revision": "1e15583f294d9d137320fe544288ca34c9435351",
+      "benchmark_only": true
+    }
+  ]
+}

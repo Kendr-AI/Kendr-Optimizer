@@ -1,0 +1,55 @@
+name: Benchmark or evidence proposal
+description: Propose a corpus, peer, metric, or reproducibility improvement.
+title: "[Evidence]: "
+body:
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I read the benchmark methodology and provenance policy.
+          required: true
+        - label: I agree to follow the Code of Conduct.
+          required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Proposal type
+      options:
+        - Corpus or fixture
+        - Peer implementation
+        - Metric or quality proxy
+        - Downstream-model evaluation
+        - Reproduction tooling
+        - Correction to published evidence
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: Evidence gap
+      description: Explain which current claim or decision this evidence would improve.
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Proposed method
+      description: Define inputs, controls, success criteria, repetitions, and failure handling.
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Provenance and license
+      description: Link the authoritative source and state licenses and redistribution constraints.
+    validations:
+      required: true
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Reproducibility plan
+      description: Identify version pins, environment capture, checksums, and expected runtime or cost.
+    validations:
+      required: true
+

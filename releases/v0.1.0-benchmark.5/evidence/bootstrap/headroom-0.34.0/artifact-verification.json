@@ -1,0 +1,10 @@
+{
+    "package":  "headroom-ai",
+    "version":  "0.34.0",
+    "filename":  "headroom_ai-0.34.0-cp310-abi3-win_amd64.whl",
+    "expected_sha256":  "2adbb309bfe34a6685c832a59eea32db0f4a837c01439f9b99051039ca81bf22",
+    "actual_sha256":  "2adbb309bfe34a6685c832a59eea32db0f4a837c01439f9b99051039ca81bf22",
+    "size_bytes":  13513079,
+    "verified":  true,
+    "source_url":  "https://files.pythonhosted.org/packages/9a/59/19b97ea93e684d2676a9d7772f5615f27ef333c90cfd6851901f78f22677/headroom_ai-0.34.0-cp310-abi3-win_amd64.whl"
+}

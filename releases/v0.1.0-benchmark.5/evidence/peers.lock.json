@@ -1,0 +1,121 @@
+{
+  "schema_version": "kendr.peer-lock/v1",
+  "reviewed_at": "2026-08-07",
+  "production_dependencies": false,
+  "tokenizer": {
+    "name": "tiktoken o200k_base",
+    "package": "tiktoken==0.12.0"
+  },
+  "peers": [
+    {
+      "id": "headroom",
+      "package": "headroom-ai[proxy]==0.34.0",
+      "tag": "v0.34.0",
+      "commit": "9fd5ae3d530b5d9eb9e9127e413235a5a3b2faf6",
+      "wheel_sha256_windows_cp310_abi3": "2adbb309bfe34a6685c832a59eea32db0f4a837c01439f9b99051039ca81bf22",
+      "source": "https://github.com/headroomlabs-ai/headroom",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "rtk",
+      "version": "0.45.0",
+      "commit": "b34be37caf3796b69a50952a28e60e32b5daad43",
+      "windows_x86_64_zip_sha256": "34cea9009a8099acdaf85147b971d95f65efabfa63fb3aea7d3e2b73e6f517c3",
+      "source": "https://github.com/rtk-ai/rtk",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "caveman",
+      "tag": "v1.10.0",
+      "commit": "fcf7663366c217dc8f334a11028de52ed950ceab",
+      "source": "https://github.com/JuliusBrussee/caveman",
+      "license": "MIT"
+    },
+    {
+      "id": "omniroute-deterministic-stack",
+      "version": "3.8.50",
+      "commit": "1e15583f294d9d137320fe544288ca34c9435351",
+      "source": "https://github.com/diegosouzapw/OmniRoute",
+      "license": "MIT",
+      "executed_modules": [
+        "open-sse/services/compression/engines/rtk/index.ts",
+        "open-sse/services/compression/caveman.ts"
+      ],
+      "runtime": {
+        "node": "24.14.0",
+        "minimal_package_lock_sha256": "b81e3de9b47b7525cd38decf55d45cd9778f6672ffca278f982bd3a69ac92d4f",
+        "packages": [
+          "js-tiktoken==1.0.21",
+          "omniglyph==1.3.1",
+          "smol-toml==1.7.1",
+          "zod==4.4.3"
+        ]
+      }
+    },
+    {
+      "id": "llmlingua-family",
+      "package": "llmlingua==0.2.2",
+      "tag": "v0.2.2",
+      "commit": "a411a3fa61df74411157b2512b592d5357bd8f17",
+      "wheel_sha256": "da55137efe0db78063b3395396efe8a0dcfe4ae5a09aea0d503c34b7bf1d800c",
+      "source": "https://github.com/microsoft/LLMLingua",
+      "license": "MIT"
+    },
+    {
+      "id": "selective-context",
+      "package": "selective-context==0.1.4",
+      "commit": "3074343653bbf3559a87a588667e843744bc6f2a",
+      "source": "https://github.com/liyucheng09/Selective_Context",
+      "license_claim": "MIT in package metadata; audited commit has no root LICENSE"
+    },
+    {
+      "id": "recomp",
+      "commit": "51d4432151efb3275257a9407dc71d1e5ec6634d",
+      "source": "https://github.com/carriex/recomp",
+      "license": "MIT"
+    },
+    {
+      "id": "pctoolkit",
+      "commit": "e38d6d80c1bdc1eb4feb8fe008e0aad48003a006",
+      "source": "https://github.com/3DAgentWorld/Toolkit-for-Prompt-Compression",
+      "license": "MIT"
+    }
+  ],
+  "models": [
+    {
+      "use": "headroom-kompress-default",
+      "id": "chopratejas/kompress-v2-base",
+      "revision": "b1563631b35bfdcee37587ad530147497d820d4c",
+      "license": "Apache-2.0",
+      "artifact": {
+        "path": "onnx/kompress-int8-wo.onnx",
+        "bytes": 274049435,
+        "sha256": "c47ddd764dec5cf91fd1f10cf69e5538dd2a49d913828da7f6a993931cc7904f"
+      }
+    },
+    {
+      "use": "headroom-kompress-tokenizer",
+      "id": "answerdotai/ModernBERT-base",
+      "revision": "8949b909ec900327062f0ebf497f51aef5e6f0c8",
+      "license": "Apache-2.0",
+      "tokenizer_files_sha256": {
+        "config.json": "1609d59e627c33eaed524b4f01e546d42e84190a079a5a5ded84b212c41c324f",
+        "special_tokens_map.json": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049",
+        "tokenizer.json": "9fd55248d51d33976b324fc11592e28071da7d41e0e9401dfb7082e30574b7b1",
+        "tokenizer_config.json": "3cd2017ff46d0a527e5d39cae39272eccfa1f19bb9f89b05d166aab2e38354e2"
+      }
+    },
+    {
+      "use": "llmlingua2-small",
+      "id": "microsoft/llmlingua-2-bert-base-multilingual-cased-meetingbank",
+      "revision": "5f0c82792b7ea14c6484e015b6a072009496b7f2",
+      "license": "Apache-2.0"
+    },
+    {
+      "use": "llmlingua-cpu-feasibility",
+      "id": "openai-community/gpt2",
+      "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "notice": "Small noncanonical feasibility model."
+    }
+  ]
+}

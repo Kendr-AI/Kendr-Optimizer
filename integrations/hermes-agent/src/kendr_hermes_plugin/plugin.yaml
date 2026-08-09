@@ -1,0 +1,4 @@
+name: kendr-optimizer
+version: 0.1.0
+description: Fail-open request and tool-result optimization through a loopback KendrOptimizer sidecar
+

@@ -1,0 +1,54 @@
+{
+  "schema_version": "kendr.host-capabilities/v1",
+  "adapter": "@kendr/optimizer-opencode",
+  "host": "opencode-v1",
+  "audited_package": "@opencode-ai/plugin",
+  "audited_host_version": "1.18.15",
+  "audited_host_commit": "d7b115f623760e68a4749d16508a9eca350f246f",
+  "provider_egress": false,
+  "stores_provider_credentials": false,
+  "default_risk_ceiling": "representation_safe",
+  "fail_open": true,
+  "host_error_semantics": "OpenCode V1 propagates plugin hook exceptions, so every Kendr hook catches internally and commits mutations only after response validation.",
+  "transforms": {
+    "current_user_message": {
+      "mode": "apply",
+      "hook": "chat.message"
+    },
+    "tool_result": {
+      "mode": "apply",
+      "hook": "tool.execute.after.output"
+    },
+    "history": {
+      "mode": "experimental_opt_in",
+      "hook": "experimental.chat.messages.transform",
+      "option": "experimentalHistory"
+    },
+    "system_prompt": {
+      "mode": "experimental_opt_in",
+      "hook": "experimental.chat.system.transform",
+      "option": "experimentalSystem"
+    },
+    "tool_definitions": {
+      "mode": "disabled",
+      "reason": "The adapter has no quality-safe generic schema rewrite and no guaranteed full-tool retry."
+    },
+    "generation_controls": {
+      "mode": "disabled",
+      "reason": "chat.params is available, but generic output-token limits are not quality-neutral."
+    },
+    "assistant_output": {
+      "mode": "unsupported",
+      "reason": "Post-generation rewriting cannot reduce provider output billing."
+    }
+  },
+  "core_host_capabilities": {
+    "can_narrow_tools": false,
+    "can_restore_references": false,
+    "can_retry_with_full_tools": false,
+    "streaming_output": true,
+    "can_set_max_output_tokens": false,
+    "can_set_verbosity": false,
+    "can_append_generation_policy": false
+  }
+}

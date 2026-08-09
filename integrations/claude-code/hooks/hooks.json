@@ -1,0 +1,39 @@
+{
+  "description": "KendrOptimizer Claude Code bridge. Prompt and assistant output events are observed only; successful tool output may be transformed.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "http",
+            "url": "http://127.0.0.1:7332/hooks/claude-code/user-prompt-submit",
+            "timeout": 1
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "http",
+            "url": "http://127.0.0.1:7332/hooks/claude-code/post-tool-use",
+            "timeout": 1
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "http",
+            "url": "http://127.0.0.1:7332/hooks/claude-code/stop",
+            "timeout": 1
+          }
+        ]
+      }
+    ]
+  }
+}

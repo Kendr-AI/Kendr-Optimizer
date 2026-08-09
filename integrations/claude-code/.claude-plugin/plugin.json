@@ -1,0 +1,10 @@
+{
+  "name": "kendr-optimizer",
+  "version": "0.1.0",
+  "description": "Optimizes successful tool results through a local, transform-only Kendr Optimizer service.",
+  "author": {
+    "name": "Kendr Optimizer contributors"
+  },
+  "homepage": "https://github.com/UnpredictablePrashant/KendrOptimizer",
+  "license": "Apache-2.0"
+}

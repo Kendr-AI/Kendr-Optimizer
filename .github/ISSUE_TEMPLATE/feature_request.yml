@@ -1,0 +1,61 @@
+name: Feature request
+description: Propose a product, engine, contract, or integration improvement.
+title: "[Feature]: "
+body:
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I searched existing issues and the roadmap for this proposal.
+          required: true
+        - label: I agree to follow the Code of Conduct.
+          required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Contracts
+        - Optimization engine
+        - Safety and validation
+        - CLI or local service
+        - Host integration
+        - Measurement or benchmarking
+        - Documentation or developer experience
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the user need without assuming a particular implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Explain the behavior, API shape, or integration seam you suggest.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety, quality, and compatibility
+      description: Address risk level, reversibility, cache behavior, protocol preservation, and breaking changes.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence plan
+      description: Describe tests and measurements that would show the change is useful without regressing task quality.
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Prior art and licenses
+      description: Link primary papers or official implementations and identify their licenses, if relevant.
+

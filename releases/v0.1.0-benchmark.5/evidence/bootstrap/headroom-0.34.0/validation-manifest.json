@@ -1,0 +1,8 @@
+{
+    "exit_code":  0,
+    "python":  "<HEADROOM_PYTHON>",
+    "headroom_version":  "0.34.0",
+    "command_shape":  "python -c \u003cadapter\u003e; headroom.compress(messages, model=gpt-4o, compress_user_messages=True, protect_recent=0, min_tokens_to_compress=0, kompress_model=disabled)",
+    "tiktoken_cache":  "<TIKTOKEN_CACHE>",
+    "hf_home":  "<PROJECT_ROOT>\\benchmarks\\.cache\\hf-home"
+}

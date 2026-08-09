@@ -1,0 +1,112 @@
+{
+  "schema_version": "kendr.optimize/v1",
+  "phase": "request",
+  "request_id": "example-build-001",
+  "session_id": "example-session",
+  "content": {
+    "messages": [
+      {
+        "id": "user-1",
+        "role": "user",
+        "parts": [
+          {
+            "type": "text",
+            "text": "Diagnose the failed build. Preserve every error, path, number, and suggested command."
+          }
+        ]
+      },
+      {
+        "id": "assistant-1",
+        "role": "assistant",
+        "parts": [
+          {
+            "type": "tool_call",
+            "id": "call-1",
+            "name": "exec",
+            "arguments": {
+              "command": "cargo test --workspace"
+            }
+          }
+        ]
+      },
+      {
+        "id": "tool-1",
+        "role": "tool",
+        "parts": [
+          {
+            "type": "tool_result",
+            "call_id": "call-1",
+            "name": "exec",
+            "content": "\u001b[32mCompiling dependency\u001b[0m\nCompiling dependency\nCompiling dependency\nCompiling dependency\nCompiling dependency\nerror[E0308]: mismatched types\n  --> src/main.rs:42:17\nexpected usize, found String\nBuild failed with exit code 101",
+            "is_error": true
+          }
+        ]
+      }
+    ],
+    "tools": [
+      {
+        "name": "exec",
+        "description": "Execute a local shell command and return its output.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "command"
+          ]
+        },
+        "required": true,
+        "tags": [
+          "always"
+        ]
+      }
+    ]
+  },
+  "target": {
+    "tokenizer_profile": "o200k_base",
+    "model": "accounting-hint-only",
+    "pricing": {
+      "input_per_million": 2.5,
+      "cached_input_per_million": 0.25,
+      "output_per_million": 10,
+      "currency": "USD"
+    }
+  },
+  "generation": {
+    "current_max_output_tokens": 2000,
+    "target_output_tokens": null,
+    "expected_output_tokens": 800,
+    "requested_verbosity": "auto",
+    "required_elements": [
+      "root cause",
+      "exact error",
+      "next command"
+    ]
+  },
+  "host_capabilities": {
+    "can_narrow_tools": false,
+    "can_restore_references": false,
+    "can_retry_with_full_tools": false,
+    "streaming_output": true,
+    "can_set_max_output_tokens": false,
+    "can_set_verbosity": true,
+    "can_append_generation_policy": false
+  },
+  "policy": {
+    "risk_ceiling": "extractive",
+    "min_gain_tokens": 4,
+    "min_gain_percent": 1,
+    "latency_budget_ms": 100,
+    "preserve_cache_prefix": true,
+    "shadow": false,
+    "preserve_recent_messages": 6,
+    "max_tool_result_chars": 24000,
+    "enable_tool_selection": false,
+    "enable_lossy_tool_output": false,
+    "enable_generation_policy": true,
+    "min_expected_output_saving_tokens": 32
+  }
+}

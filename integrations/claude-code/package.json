@@ -1,0 +1,53 @@
+{
+  "name": "@kendr/optimizer-claude-code",
+  "version": "0.1.0",
+  "description": "Fail-open Claude Code HTTP-hook bridge for the Kendr transform-only optimizer",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnpredictablePrashant/KendrOptimizer.git",
+    "directory": "integrations/claude-code"
+  },
+  "homepage": "https://github.com/UnpredictablePrashant/KendrOptimizer/tree/main/integrations/claude-code#readme",
+  "bugs": {
+    "url": "https://github.com/UnpredictablePrashant/KendrOptimizer/issues"
+  },
+  "publishConfig": { "access": "public" },
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "kendr-claude-code-bridge": "./dist/server.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "LICENSE",
+    "NOTICE",
+    ".claude-plugin",
+    "hooks",
+    "capabilities.json",
+    "dist/index.d.ts",
+    "dist/index.js",
+    "dist/index.js.map",
+    "dist/server.d.ts",
+    "dist/server.js",
+    "dist/server.js.map",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/index.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.1",
+    "typescript": "7.0.2"
+  }
+}

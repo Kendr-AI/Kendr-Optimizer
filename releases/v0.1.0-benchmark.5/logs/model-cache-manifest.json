@@ -1,0 +1,148 @@
+{
+  "schema_version": "kendr.model-cache-manifest/v1",
+  "captured_at": "2026-08-07T19:57:35.054172+00:00",
+  "models": [
+    {
+      "model_id": "openai-community/gpt2",
+      "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "status": "present",
+      "files": [
+        {
+          "name": "config.json",
+          "bytes": 665,
+          "sha256": "0daed7749b4f02b8f76240d5444551d7b08712dab4d0adb8239c56ba823bb7b4",
+          "content_address": "10c66461e4c109db5a2196bff4bb59be30396ed8"
+        },
+        {
+          "name": "generation_config.json",
+          "bytes": 124,
+          "sha256": "ed0b32ac72c0f5f44a719abb2d7786ea5146c871f83717b7f2018065954de02b",
+          "content_address": "3dc481ecc3b2c47a06ab4e20dba9d7f4b447bdf3"
+        },
+        {
+          "name": "merges.txt",
+          "bytes": 456318,
+          "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
+          "content_address": "226b0752cac7789c48f0cb3ec53eda48b7be36cc"
+        },
+        {
+          "name": "model.safetensors",
+          "bytes": 548105171,
+          "sha256": "248dfc3911869ec493c76e65bf2fcf7f615828b0254c12b473182f0f81d3a707",
+          "content_address": "248dfc3911869ec493c76e65bf2fcf7f615828b0254c12b473182f0f81d3a707"
+        },
+        {
+          "name": "pytorch_model.bin",
+          "bytes": 548118077,
+          "sha256": "7c5d3f4b8b76583b422fcb9189ad6c89d5d97a094541ce8932dce3ecabde1421",
+          "content_address": "7c5d3f4b8b76583b422fcb9189ad6c89d5d97a094541ce8932dce3ecabde1421"
+        },
+        {
+          "name": "tokenizer.json",
+          "bytes": 1355256,
+          "sha256": "8414cab924d8b9b33013f0d221c5862f365ee9be39c5c2bfae8a5a9e970478a6",
+          "content_address": "4b988bccc9dc5adacd403c00b4704976196548f8"
+        },
+        {
+          "name": "tokenizer_config.json",
+          "bytes": 26,
+          "sha256": "5e04eb606e3a1583530a42e36c2a6b6615c86f34fe77e44d9ddeb43ff940931f",
+          "content_address": "be4d21d94f3b4687e5a54d84bf6ab46ed0f8defd"
+        },
+        {
+          "name": "vocab.json",
+          "bytes": 1042301,
+          "sha256": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783",
+          "content_address": "1f1d9aaca301414e7f6c9396df506798ff4eb9a6"
+        }
+      ]
+    },
+    {
+      "model_id": "microsoft/llmlingua-2-bert-base-multilingual-cased-meetingbank",
+      "revision": "5f0c82792b7ea14c6484e015b6a072009496b7f2",
+      "status": "present",
+      "files": [
+        {
+          "name": "config.json",
+          "bytes": 875,
+          "sha256": "e6c33ec2f099e659e125efaa8b7bb07a6e65b7d9fc36211c6fa3206e1c399085",
+          "content_address": "5be75db365d38a944bd75206767749409f53ddb1"
+        },
+        {
+          "name": "model.safetensors",
+          "bytes": 709388104,
+          "sha256": "22b9ecde52fec5c97e8c54a293be768727df95a81c6c8dccb03f262a50c58324",
+          "content_address": "model.safetensors"
+        },
+        {
+          "name": "special_tokens_map.json",
+          "bytes": 125,
+          "sha256": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+          "content_address": "a8b3208c2884c4efb86e49300fdd3dc877220cdf"
+        },
+        {
+          "name": "tokenizer.json",
+          "bytes": 2919362,
+          "sha256": "bf1b59b7b11c95f194f51708d918eea378e09d05f84c0e1656dc5180e8117088",
+          "content_address": "21f54a4b56685f29358f3a8de1f5b8d827357d07"
+        },
+        {
+          "name": "tokenizer_config.json",
+          "bytes": 1191,
+          "sha256": "214f78f6c5d034a8b405632d301ee3710eb6f075b3f5faf8241a273a13908746",
+          "content_address": "ecd1353b9d122e02abcfb6014ec43fea7a80fcff"
+        },
+        {
+          "name": "vocab.txt",
+          "bytes": 995526,
+          "sha256": "fe0fda7c425b48c516fc8f160d594c8022a0808447475c1a7c6d6479763f310c",
+          "content_address": "e837bab60a5d204e29622d127c2dafe508aa0731"
+        }
+      ]
+    },
+    {
+      "model_id": "chopratejas/kompress-v2-base",
+      "revision": "b1563631b35bfdcee37587ad530147497d820d4c",
+      "status": "present",
+      "files": [
+        {
+          "name": "onnx/kompress-int8-wo.onnx",
+          "bytes": 274049435,
+          "sha256": "c47ddd764dec5cf91fd1f10cf69e5538dd2a49d913828da7f6a993931cc7904f",
+          "content_address": "c47ddd764dec5cf91fd1f10cf69e5538dd2a49d913828da7f6a993931cc7904f"
+        }
+      ]
+    },
+    {
+      "model_id": "answerdotai/ModernBERT-base",
+      "revision": "8949b909ec900327062f0ebf497f51aef5e6f0c8",
+      "status": "present",
+      "files": [
+        {
+          "name": "config.json",
+          "bytes": 1193,
+          "sha256": "1609d59e627c33eaed524b4f01e546d42e84190a079a5a5ded84b212c41c324f",
+          "content_address": "42dbe7f4826f9479e2f2965806dd206d07a57495"
+        },
+        {
+          "name": "special_tokens_map.json",
+          "bytes": 694,
+          "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049",
+          "content_address": "6bf65ea14185a88eef7e24b41c86a953a58dcbad"
+        },
+        {
+          "name": "tokenizer.json",
+          "bytes": 2132967,
+          "sha256": "9fd55248d51d33976b324fc11592e28071da7d41e0e9401dfb7082e30574b7b1",
+          "content_address": "de3f3e316b66f3885df49ab2c0fff3e477ff1680"
+        },
+        {
+          "name": "tokenizer_config.json",
+          "bytes": 20810,
+          "sha256": "3cd2017ff46d0a527e5d39cae39272eccfa1f19bb9f89b05d166aab2e38354e2",
+          "content_address": "d78aa50c890c167d8700301e5580164466e51fa5"
+        }
+      ]
+    }
+  ]
+}

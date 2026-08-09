@@ -1,0 +1,1 @@
+Content detection using pure-Python backend (native Magika/ONNX detector is unsafe by default on Windows; override with HEADROOM_DETECT_BACKEND=rust).

@@ -1,0 +1,94 @@
+{
+  "id": "kendr-optimizer",
+  "name": "KendrOptimizer",
+  "description": "Optimizes assembled model context through a loopback-only KendrOptimizer transform service",
+  "version": "0.1.0",
+  "kind": "context-engine",
+  "activation": {
+    "onStartup": true
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "endpoint": {
+        "type": "string",
+        "default": "http://127.0.0.1:7331",
+        "pattern": "^https?://(?:127\\.0\\.0\\.1|\\[::1\\])(?::[0-9]{1,5})?$",
+        "description": "Loopback origin of the KendrOptimizer transform-only service"
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 5000,
+        "default": 100,
+        "description": "Per-optimization deadline; timeout returns the original OpenClaw messages"
+      },
+      "failureBackoffMs": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 60000,
+        "default": 5000,
+        "description": "Short circuit-breaker interval after a service failure"
+      },
+      "tokenizerProfile": {
+        "type": "string",
+        "enum": [
+          "approximate",
+          "cl100k_base",
+          "o200k_base"
+        ],
+        "default": "approximate"
+      },
+      "riskCeiling": {
+        "type": "string",
+        "enum": [
+          "pass_through",
+          "representation_safe"
+        ],
+        "default": "representation_safe",
+        "description": "The adapter currently permits only pass-through or representation-safe transforms"
+      },
+      "minGainTokens": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 8
+      },
+      "minGainPercent": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "default": 1
+      },
+      "preserveRecentMessages": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1000,
+        "default": 6
+      },
+      "maxToolResultChars": {
+        "type": "integer",
+        "minimum": 256,
+        "maximum": 10000000,
+        "default": 24000
+      },
+      "shadow": {
+        "type": "boolean",
+        "default": false,
+        "description": "Analyze candidates but return the original context"
+      }
+    }
+  },
+  "uiHints": {
+    "endpoint": {
+      "label": "Local optimizer",
+      "placeholder": "http://127.0.0.1:7331"
+    },
+    "riskCeiling": {
+      "label": "Risk ceiling"
+    },
+    "shadow": {
+      "label": "Shadow mode"
+    }
+  }
+}

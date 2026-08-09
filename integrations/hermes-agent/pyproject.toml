@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kendr-optimizer-hermes"
+version = "0.1.0"
+description = "Fail-open Kendr Optimizer middleware for Hermes Agent"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Kendr Optimizer contributors" }]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/UnpredictablePrashant/KendrOptimizer"
+Repository = "https://github.com/UnpredictablePrashant/KendrOptimizer"
+Issues = "https://github.com/UnpredictablePrashant/KendrOptimizer/issues"
+Documentation = "https://github.com/UnpredictablePrashant/KendrOptimizer/tree/main/integrations/hermes-agent#readme"
+
+[project.entry-points."hermes_agent.plugins"]
+kendr-optimizer = "kendr_hermes_plugin"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+kendr_hermes_plugin = ["plugin.yaml"]

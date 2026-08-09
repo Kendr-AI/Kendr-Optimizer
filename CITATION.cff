@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: >-
+  If you use Kendr Optimizer in research or evaluation, please cite the software
+  and identify the exact version or commit you evaluated.
+title: Kendr Optimizer
+type: software
+authors:
+  - name: Kendr Optimizer contributors
+abstract: >-
+  A model-neutral engine for reducing the token surface of LLM requests and
+  future conversation context while returning verification results and an
+  explicit optimization receipt.
+repository-code: https://github.com/UnpredictablePrashant/KendrOptimizer
+url: https://github.com/UnpredictablePrashant/KendrOptimizer
+license: Apache-2.0
+version: 0.1.0
+keywords:
+  - large language models
+  - token optimization
+  - prompt optimization
+  - context engineering
+  - reproducible evaluation

@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kendr.ai/schemas/optimizer/receipt-v1.schema.json",
+  "title": "KendrOptimizer preflight receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "status",
+    "original",
+    "optimized",
+    "token_delta",
+    "byte_delta",
+    "estimated_input_reduction_percent",
+    "verified_savings",
+    "cache_impact",
+    "total_latency_micros",
+    "attempts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "kendr.receipt/v1"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "applied",
+        "skipped",
+        "shadow",
+        "reverted"
+      ]
+    },
+    "original": {
+      "$ref": "#/$defs/measurement"
+    },
+    "optimized": {
+      "$ref": "#/$defs/measurement"
+    },
+    "token_delta": {
+      "type": "integer"
+    },
+    "byte_delta": {
+      "type": "integer"
+    },
+    "estimated_input_reduction_percent": {
+      "type": "number"
+    },
+    "estimated_input_cost_reduction": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "verified_savings": {
+      "const": false,
+      "description": "Preflight receipts are never provider-verified savings."
+    },
+    "cache_impact": {
+      "enum": [
+        "none",
+        "prefix_preserved",
+        "unknown",
+        "invalidated"
+      ]
+    },
+    "total_latency_micros": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/attempt"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "no_op_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "$defs": {
+    "measurement": {
+      "type": "object",
+      "required": [
+        "tokens",
+        "bytes",
+        "tokenizer",
+        "confidence",
+        "serialized_sha256"
+      ],
+      "properties": {
+        "tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tokenizer": {
+          "type": "string"
+        },
+        "confidence": {
+          "enum": [
+            "exact_tokenizer",
+            "conservative_estimate"
+          ]
+        },
+        "serialized_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "required": [
+        "engine_id",
+        "engine_version",
+        "status",
+        "risk",
+        "reversible",
+        "token_delta",
+        "byte_delta",
+        "elapsed_micros",
+        "reason",
+        "verification"
+      ],
+      "properties": {
+        "engine_id": {
+          "type": "string"
+        },
+        "engine_version": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "applied",
+            "no_candidate",
+            "rejected",
+            "shadow",
+            "reverted",
+            "timed_out"
+          ]
+        },
+        "risk": {
+          "enum": [
+            "pass_through",
+            "representation_safe",
+            "recoverable",
+            "extractive",
+            "learned"
+          ]
+        },
+        "reversible": {
+          "type": "boolean"
+        },
+        "token_delta": {
+          "type": "integer"
+        },
+        "byte_delta": {
+          "type": "integer"
+        },
+        "elapsed_micros": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reason": {
+          "type": "string"
+        },
+        "verification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "passed"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "passed": {
+                "type": "boolean"
+              },
+              "detail": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

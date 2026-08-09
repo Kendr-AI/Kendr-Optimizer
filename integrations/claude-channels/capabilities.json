@@ -1,0 +1,42 @@
+{
+  "schema_version": "kendr.host-capabilities/v1",
+  "adapter": "@kendr/optimizer-claude-channels",
+  "host": "claude-code-channels",
+  "audited_host_version": "2.1.224",
+  "audited_host_commit": "66edf5358349356774812264b75b8ea792f0d0a3",
+  "host_feature_status": "research_preview",
+  "provider_egress": false,
+  "stores_provider_credentials": false,
+  "default_risk_ceiling": "representation_safe",
+  "fail_open": true,
+  "transforms": {
+    "authorized_notification_content": {
+      "mode": "apply",
+      "location": "channel_source_before_notifications/claude/channel"
+    },
+    "notification_meta": {
+      "mode": "preserve_exactly"
+    },
+    "interpose_existing_channel_plugin": {
+      "mode": "unsupported",
+      "reason": "Claude Code exposes each channel as its own MCP server; one plugin cannot rewrite another plugin's emitted notification."
+    },
+    "assistant_output": {
+      "mode": "unsupported",
+      "reason": "Output optimization occurs before generation, not after channel ingress."
+    }
+  },
+  "security_preconditions": [
+    "The channel source must authenticate and authorize the sender before invoking this helper.",
+    "The helper accepts only credential-free numeric loopback optimizer endpoints."
+  ],
+  "core_host_capabilities": {
+    "can_narrow_tools": false,
+    "can_restore_references": false,
+    "can_retry_with_full_tools": false,
+    "streaming_output": true,
+    "can_set_max_output_tokens": false,
+    "can_set_verbosity": false,
+    "can_append_generation_policy": false
+  }
+}

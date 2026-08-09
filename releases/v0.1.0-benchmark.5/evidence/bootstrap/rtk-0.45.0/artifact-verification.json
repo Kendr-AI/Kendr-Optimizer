@@ -1,0 +1,12 @@
+{
+    "project":  "rtk",
+    "version":  "0.45.0",
+    "tag":  "v0.45.0",
+    "target_commitish":  "b34be37caf3796b69a50952a28e60e32b5daad43",
+    "filename":  "rtk-x86_64-pc-windows-msvc.zip",
+    "expected_sha256":  "34cea9009a8099acdaf85147b971d95f65efabfa63fb3aea7d3e2b73e6f517c3",
+    "actual_sha256":  "34cea9009a8099acdaf85147b971d95f65efabfa63fb3aea7d3e2b73e6f517c3",
+    "size_bytes":  4041041,
+    "verified":  true,
+    "source_url":  "https://github.com/rtk-ai/rtk/releases/download/v0.45.0/rtk-x86_64-pc-windows-msvc.zip"
+}

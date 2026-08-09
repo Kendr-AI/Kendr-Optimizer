@@ -1,0 +1,2 @@
+# Whitepaper build dependency. Keep this pin aligned with the publication PDF.
+reportlab==4.4.9

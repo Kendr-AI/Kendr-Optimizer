@@ -1,0 +1,8 @@
+{
+    "executable":  "<RTK_BINARY>",
+    "sha256":  "888ecfcc7ca6ceaf9170cf95027d196d6010c7d1a1892b3662b4bb61f18a3618",
+    "size_bytes":  9192448,
+    "version":  "rtk 0.45.0",
+    "os":  "Microsoft Windows NT 10.0.26200.0",
+    "architecture":  "AMD64"
+}

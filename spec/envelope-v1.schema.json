@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kendr.ai/schemas/optimizer/envelope-v1.schema.json",
+  "title": "KendrOptimizer request envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "phase",
+    "content"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "kendr.optimize/v1"
+    },
+    "phase": {
+      "enum": [
+        "request",
+        "tool_result",
+        "history_ingest",
+        "output_observation"
+      ]
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "content": {
+      "$ref": "#/$defs/content"
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "generation": {
+      "$ref": "#/$defs/generation"
+    },
+    "host_capabilities": {
+      "$ref": "#/$defs/hostCapabilities"
+    },
+    "policy": {
+      "$ref": "#/$defs/policy"
+    }
+  },
+  "$defs": {
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/message"
+          }
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/tool"
+          }
+        },
+        "output_contract": {},
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role",
+        "parts"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "system",
+            "developer",
+            "user",
+            "assistant",
+            "tool"
+          ]
+        },
+        "parent_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/part"
+          }
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "part": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "const": "code"
+            },
+            "language": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "value"
+          ],
+          "properties": {
+            "type": {
+              "const": "json"
+            },
+            "value": {}
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "const": "document"
+            },
+            "media_type": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "uri"
+          ],
+          "properties": {
+            "type": {
+              "const": "image_reference"
+            },
+            "uri": {
+              "type": "string"
+            },
+            "alt": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "id",
+            "name",
+            "arguments"
+          ],
+          "properties": {
+            "type": {
+              "const": "tool_call"
+            },
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "arguments": {}
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "call_id",
+            "content"
+          ],
+          "properties": {
+            "type": {
+              "const": "tool_result"
+            },
+            "call_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "content": {
+              "type": "string"
+            },
+            "is_error": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "tool": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "input_schema": {},
+        "required": {
+          "type": "boolean"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "tokenizer_profile": {
+          "enum": [
+            "approximate",
+            "cl100k_base",
+            "o200k_base"
+          ]
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "context_limit": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "pricing": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "cache_segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "message_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "hostCapabilities": {
+      "type": "object",
+      "properties": {
+        "can_narrow_tools": {
+          "type": "boolean"
+        },
+        "can_restore_references": {
+          "type": "boolean"
+        },
+        "can_retry_with_full_tools": {
+          "type": "boolean"
+        },
+        "streaming_output": {
+          "type": "boolean"
+        },
+        "can_set_max_output_tokens": {
+          "type": "boolean"
+        },
+        "can_set_verbosity": {
+          "type": "boolean"
+        },
+        "can_append_generation_policy": {
+          "type": "boolean"
+        }
+      }
+    },
+    "generation": {
+      "type": "object",
+      "properties": {
+        "current_max_output_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "target_output_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "expected_output_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "requested_verbosity": {
+          "enum": [
+            "auto",
+            "concise",
+            "standard",
+            "detailed",
+            "exact"
+          ]
+        },
+        "required_elements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "risk_ceiling": {
+          "enum": [
+            "pass_through",
+            "representation_safe",
+            "recoverable",
+            "extractive",
+            "learned"
+          ]
+        },
+        "min_gain_tokens": {
+          "type": "integer"
+        },
+        "min_gain_percent": {
+          "type": "number"
+        },
+        "latency_budget_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "preserve_cache_prefix": {
+          "type": "boolean"
+        },
+        "shadow": {
+          "type": "boolean"
+        },
+        "preserve_recent_messages": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_tool_result_chars": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "enable_tool_selection": {
+          "type": "boolean"
+        },
+        "enable_lossy_tool_output": {
+          "type": "boolean"
+        },
+        "enable_generation_policy": {
+          "type": "boolean"
+        },
+        "min_expected_output_saving_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "enabled_engines": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

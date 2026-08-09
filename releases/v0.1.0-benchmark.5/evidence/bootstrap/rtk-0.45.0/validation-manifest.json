@@ -1,0 +1,7 @@
+{
+    "exit_code":  0,
+    "executable":  "<RTK_BINARY>",
+    "version":  "rtk 0.45.0",
+    "surface":  "stdin-log",
+    "command_shape":  "\u003craw stdout\u003e | rtk log"
+}

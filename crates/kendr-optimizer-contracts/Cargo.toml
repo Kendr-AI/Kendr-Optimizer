@@ -1,0 +1,17 @@
+[package]
+name = "kendr-optimizer-contracts"
+description = "Stable, provider-neutral data contracts for Kendr Optimizer"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+documentation = "https://docs.rs/kendr-optimizer-contracts"
+keywords = ["llm", "tokens", "serde", "prompt", "ai"]
+categories = ["data-structures", "encoding"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true

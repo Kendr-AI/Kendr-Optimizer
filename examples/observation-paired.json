@@ -1,0 +1,28 @@
+{
+  "request_id": "example-build-001",
+  "optimized": {
+    "input_tokens": 8200,
+    "output_tokens": 900,
+    "cached_input_tokens": 4000,
+    "total_cost": {
+      "amount": 0.024,
+      "currency": "USD",
+      "basis": "provider-reported optimized run"
+    },
+    "latency_ms": 1820,
+    "task_success": true
+  },
+  "paired_baseline": {
+    "input_tokens": 12100,
+    "output_tokens": 940,
+    "cached_input_tokens": 4000,
+    "total_cost": {
+      "amount": 0.034,
+      "currency": "USD",
+      "basis": "provider-reported paired baseline"
+    },
+    "latency_ms": 1770,
+    "task_success": true
+  }
+}
+

@@ -1,0 +1,20 @@
+{
+  "schema_version": "kendr.peer-bootstrap/v1",
+  "peer": "omniroute-deterministic-stack",
+  "upstream_version": "3.8.50",
+  "upstream_commit": "1e15583f294d9d137320fe544288ca34c9435351",
+  "node_version": "24.14.0",
+  "minimal_package_lock_sha256": "b81e3de9b47b7525cd38decf55d45cd9778f6672ffca278f982bd3a69ac92d4f",
+  "dependencies": {
+    "js-tiktoken": "1.0.21",
+    "omniglyph": "1.3.1",
+    "smol-toml": "1.7.1",
+    "zod": "4.4.3"
+  },
+  "executed_modules": [
+    "open-sse/services/compression/engines/rtk/index.ts",
+    "open-sse/services/compression/caveman.ts"
+  ],
+  "gateway_started": false,
+  "provider_called": false
+}
