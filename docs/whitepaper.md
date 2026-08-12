@@ -1247,12 +1247,12 @@ scripts/                       reproducible documentation and hygiene tools
 output/pdf/                    publication PDF
 ```
 
-The repository does not include `.claude`, `.codex`, `CLAUDE.md`, `CODEX.md`,
-`AGENTS.md`, or other development-assistant instruction files. Product adapters
-may include files that a target harness requires at installation time, such as
-NanoClaw's distributable `SKILL.md`; those are runtime integration artifacts,
-not instructions for developing this repository. A repository hygiene check
-enforces this distinction and rejects caches or compiled Python bytecode.
+The repository does not include development-assistant control directories or
+instruction files. Product adapters may include files that a target harness
+requires at installation time, such as NanoClaw's distributable `SKILL.md`;
+those are runtime integration artifacts, not instructions for developing this
+repository. A repository hygiene check enforces this distinction and rejects
+caches or compiled Python bytecode.
 
 Production and benchmark dependency boundaries are separate. A peer package or
 model may be downloaded into an isolated benchmark environment but must never

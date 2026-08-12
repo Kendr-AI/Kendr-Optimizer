@@ -205,7 +205,7 @@ class PluginTests(unittest.TestCase):
         )
         request = {"input": "redundant scalar input", "store": False}
         result = plugin.optimize_llm_request(
-            request=request, api_mode="codex_responses", api_request_id="response-1"
+            request=request, api_mode="responses", api_request_id="response-1"
         )
         self.assertEqual(result["request"], {"input": "compact input", "store": False})
 

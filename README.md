@@ -364,11 +364,10 @@ sidecar failure. See the full
 [compatibility matrix](docs/harness-compatibility.md) and immutable
 [pin ledger](integrations/harnesses.lock.json).
 
-The repository root intentionally contains no `.claude`, `.codex`,
-`CLAUDE.md`, `CODEX.md`, or `AGENTS.md` development instructions. Optional
-integration directories may contain the minimal install-time metadata a target
-harness requires; those artifacts package the product adapter and do not direct
-development of this repository.
+The repository root intentionally contains no development-assistant control
+directories or instruction files. Optional integration directories may contain
+the minimal install-time metadata a target harness requires; those artifacts
+package the product adapter and do not direct development of this repository.
 
 ## Reproduce the ranking
 
