@@ -26,6 +26,8 @@ once its pre-alpha contracts are declared stable.
   `Kendr-AI/Kendr-Optimizer` repository.
 - Continuous integration now checks repository hygiene on branches and runs the
   complete validation suite, including release metadata checks, for version tags.
+- Official checkout and language-setup actions now use their Node 24-compatible
+  major versions.
 
 ### Fixed
 
