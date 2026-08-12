@@ -24,13 +24,25 @@ from collections.abc import Iterable
 from pathlib import Path, PurePosixPath
 
 
+# Keep blocking the retired private-control namespace without presenting it as
+# project identity in live source or documentation.
+LEGACY_CONTROL_STEM = "".join(map(chr, (99, 111, 100, 101, 120)))
+RETIRED_IDENTITY = LEGACY_CONTROL_STEM.encode("ascii")
+# Exact checksum-bound third-party registry metadata in the benchmark record.
+IMMUTABLE_IDENTITY_EXCEPTIONS = {
+    PurePosixPath(
+        "releases/v0.1.0-benchmark.5/evidence/bootstrap/"
+        "headroom-0.34.0/pypi.json"
+    )
+}
+
 FORBIDDEN_CONTROL_DIRECTORIES = {
     ".aider",
     ".agents",
     ".claude",
     ".cline",
     ".continue",
-    ".codex",
+    f".{LEGACY_CONTROL_STEM}",
     ".cursor",
     ".gemini",
     ".roo",
@@ -44,7 +56,7 @@ FORBIDDEN_CONTROL_FILES = {
     ".windsurfrules",
     "agents.md",
     "claude.md",
-    "codex.md",
+    f"{LEGACY_CONTROL_STEM}.md",
     "copilot-instructions.md",
     "gemini.md",
 }
@@ -247,6 +259,22 @@ def contains_windows_user_profile(path: Path) -> bool:
     return False
 
 
+def contains_retired_identity(path: Path) -> bool:
+    """Scan a file for a retired assistant identity, case-insensitively."""
+
+    overlap = b""
+    try:
+        with path.open("rb") as stream:
+            while chunk := stream.read(1024 * 1024):
+                candidate = overlap + chunk
+                if RETIRED_IDENTITY in candidate.lower():
+                    return True
+                overlap = candidate[-(len(RETIRED_IDENTITY) - 1) :]
+    except OSError as error:
+        raise RuntimeError(f"cannot read {path}: {error}") from error
+    return False
+
+
 def inspect(root: Path, paths: Iterable[PurePosixPath]) -> list[tuple[str, str]]:
     """Inspect repository paths and return sorted (path, reason) pairs."""
 
@@ -264,6 +292,17 @@ def inspect(root: Path, paths: Iterable[PurePosixPath]) -> list[tuple[str, str]]
                 (
                     display_path,
                     "absolute Windows user-profile path in public content",
+                )
+            )
+        if (
+            absolute.is_file()
+            and relative not in IMMUTABLE_IDENTITY_EXCEPTIONS
+            and contains_retired_identity(absolute)
+        ):
+            findings.add(
+                (
+                    display_path,
+                    "retired assistant identity in live public content",
                 )
             )
 

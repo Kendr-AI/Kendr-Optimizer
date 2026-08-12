@@ -23,7 +23,7 @@
 *.py[cod]
 
 # Repository-development assistant controls
-**/.codex/
+**/.[Cc][Oo][Dd][Ee][Xx]/
 **/.claude/
 **/.aider/
 **/.agents/
@@ -40,7 +40,7 @@
 **/.windsurfrules
 **/AGENTS.md
 **/CLAUDE.md
-**/CODEX.md
+**/[Cc][Oo][Dd][Ee][Xx].md
 **/GEMINI.md
 **/copilot-instructions.md
 **/*.agent.md

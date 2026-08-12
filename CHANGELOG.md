@@ -7,6 +7,10 @@ once its pre-alpha contracts are declared stable.
 
 ## [Unreleased]
 
+### Changed
+
+- Public branch naming and live repository text now use Kendr-only identity.
+
 ## [0.1.0] - 2026-08-12
 
 ### Added

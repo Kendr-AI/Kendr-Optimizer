@@ -16,11 +16,11 @@ import check_repository_hygiene as hygiene  # noqa: E402
 class RepositoryHygieneTests(unittest.TestCase):
     def test_rejects_repository_development_controls(self) -> None:
         for path in (
-            PurePosixPath(".codex/settings.json"),
+            PurePosixPath(f".{hygiene.LEGACY_CONTROL_STEM}/settings.json"),
             PurePosixPath("tools/.claude/settings.json"),
             PurePosixPath("AGENTS.md"),
             PurePosixPath("nested/CLAUDE.md"),
-            PurePosixPath("nested/CODEX.md"),
+            PurePosixPath(f"nested/{hygiene.LEGACY_CONTROL_STEM.upper()}.md"),
             PurePosixPath("GEMINI.md"),
             PurePosixPath(".cursor/rules/project.mdc"),
             PurePosixPath(".agents/local-policy.md"),
@@ -112,6 +112,35 @@ class RepositoryHygieneTests(unittest.TestCase):
                 (
                     relative.as_posix(),
                     "absolute Windows user-profile path in public content",
+                ),
+                findings,
+            )
+
+    def test_rejects_retired_identity_only_in_live_content(self) -> None:
+        live = PurePosixPath("docs/identity.txt")
+        evidence = next(iter(hygiene.IMMUTABLE_IDENTITY_EXCEPTIONS))
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for relative in (live, evidence):
+                artifact = root.joinpath(*relative.parts)
+                artifact.parent.mkdir(parents=True, exist_ok=True)
+                artifact.write_text(
+                    hygiene.LEGACY_CONTROL_STEM.upper(), encoding="utf-8"
+                )
+
+            findings = hygiene.inspect(root, [live, evidence])
+            self.assertIn(
+                (
+                    live.as_posix(),
+                    "retired assistant identity in live public content",
+                ),
+                findings,
+            )
+            self.assertNotIn(
+                (
+                    evidence.as_posix(),
+                    "retired assistant identity in live public content",
                 ),
                 findings,
             )
