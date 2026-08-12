@@ -16,7 +16,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check release tag and metadata
         shell: bash
         run: |
@@ -31,7 +31,7 @@ jobs:
   hygiene:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Test repository hygiene checker
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py'
       - name: Check repository hygiene
@@ -40,7 +40,7 @@ jobs:
   rust:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@1.88.0
         with:
           components: rustfmt, clippy
@@ -52,8 +52,8 @@ jobs:
   evidence-and-docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Test release hardening
@@ -84,8 +84,8 @@ jobs:
       run:
         working-directory: integrations/${{ matrix.adapter }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
@@ -100,14 +100,14 @@ jobs:
   hermes-adapter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check out audited Hermes Agent source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: NousResearch/hermes-agent
           ref: 3c27eb6234bf91b8ceee9e9071591b31e9b148cb
           path: .upstream/hermes-agent
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Run adapter and pinned upstream-contract tests
@@ -124,14 +124,14 @@ jobs:
   nanoclaw-adapter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check out audited NanoClaw source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: nanocoai/nanoclaw
           ref: 743e32df4e6c05f3725c17cb2ec11f2b65079eec
           path: .upstream/nanoclaw
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
       - uses: oven-sh/setup-bun@v2
