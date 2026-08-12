@@ -337,6 +337,6 @@ Security policy enforcement is not the optimizer's job. The optimizer may remove
 
 ## Maturity warning
 
-Version `0.1.0` is a repository package version, not a production-readiness declaration. The project currently demonstrates the contracts, conservative native transformations, gates, receipts, local service, a detailed OpenClaw sidecar adapter, and additional audited harness mappings. It has not yet established broad model non-inferiority, production resource isolation, secure recovery storage, stable external APIs, or comprehensive provider accounting.
+Version `0.1.1` is a repository package version, not a production-readiness declaration. The project currently demonstrates the contracts, conservative native transformations, gates, receipts, local service, a detailed OpenClaw sidecar adapter, and additional audited harness mappings. It has not yet established broad model non-inferiority, production resource isolation, secure recovery storage, stable external APIs, or comprehensive provider accounting.
 
 Use shadow mode first. Treat applied pre-alpha transformations as experiments until workload-specific evaluation supports them.

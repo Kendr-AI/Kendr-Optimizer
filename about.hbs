@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kendr Optimizer third-party licenses</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; margin: 2rem auto; max-width: 72rem; padding: 0 1rem; }
+    pre { border: 1px solid #ccc; overflow-x: auto; padding: 1rem; white-space: pre-wrap; }
+    code { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Kendr Optimizer third-party licenses</h1>
+  <p>This file is generated from the locked Rust dependency graph by cargo-about.</p>
+  <h2>License overview</h2>
+  <ul>
+  {{#each overview}}
+    <li>{{name}} ({{count}} uses)</li>
+  {{/each}}
+  </ul>
+  {{#each licenses}}
+  <section>
+    <h2>{{name}}</h2>
+    <p>Used by:</p>
+    <ul>
+    {{#each used_by}}
+      <li><code>{{crate.name}} {{crate.version}}</code></li>
+    {{/each}}
+    </ul>
+    <pre>{{text}}</pre>
+  </section>
+  {{/each}}
+</body>
+</html>

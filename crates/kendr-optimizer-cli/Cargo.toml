@@ -19,8 +19,8 @@ path = "src/main.rs"
 [dependencies]
 axum.workspace = true
 clap.workspace = true
-kendr-optimizer-contracts = { version = "0.1.0", path = "../kendr-optimizer-contracts" }
-kendr-optimizer-core = { version = "0.1.0", path = "../kendr-optimizer-core" }
+kendr-optimizer-contracts = { version = "0.1.1", path = "../kendr-optimizer-contracts" }
+kendr-optimizer-core = { version = "0.1.1", path = "../kendr-optimizer-core" }
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true

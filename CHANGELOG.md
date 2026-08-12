@@ -7,6 +7,17 @@ once its pre-alpha contracts are declared stable.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-12
+
+### Added
+
+- Checksum-verified, build-free CLI installers for PowerShell and POSIX shells.
+- Native CLI archives for Windows x64, Linux x64 and ARM64, and macOS Intel
+  and Apple Silicon, with bundled project and third-party license notices.
+- A tag-gated release pipeline that smoke-tests every native binary, assembles
+  deterministic archives, verifies release asset digests, and publishes only
+  after the complete CI suite succeeds.
+
 ### Changed
 
 - Public branch naming and live repository text now use Kendr-only identity.

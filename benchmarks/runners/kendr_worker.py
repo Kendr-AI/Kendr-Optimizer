@@ -126,7 +126,7 @@ def main() -> None:
         optimizer={
             "id": f"kendr-{args.mode}",
             "name": "KendrOptimizer",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "revision": args.revision,
             "class": "structured_payload_optimizer",
             "setting": args.mode,

@@ -344,7 +344,7 @@ def main() -> None:
             f"kendr-{mode}",
             [sys.executable, str(runners / "kendr_worker.py"), "--corpus", str(corpus), "--output", str(output), "--binary", str(executable), "--mode", mode],
             output_path=output,
-            failure_meta={"id": f"kendr-{mode}", "name": "KendrOptimizer", "version": "0.1.0", "class": "structured_payload_optimizer", "setting": mode, "surfaces": "tool_output" if mode.startswith("extractive") else "prompt_context,tool_output"},
+            failure_meta={"id": f"kendr-{mode}", "name": "KendrOptimizer", "version": "0.1.1", "class": "structured_payload_optimizer", "setting": mode, "surfaces": "tool_output" if mode.startswith("extractive") else "prompt_context,tool_output"},
         )
 
     if args.headroom_python:
