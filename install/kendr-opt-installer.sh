@@ -163,8 +163,9 @@ cp "$candidate" "$staged_path" || fail "cannot stage kendr-opt in $install_dir"
 chmod 0755 "$staged_path"
 mv -f "$staged_path" "$destination" || fail "cannot install kendr-opt in $install_dir"
 staged_path=""
-[ -f "$destination" ] && [ ! -L "$destination" ] ||
+if [ ! -f "$destination" ] || [ -L "$destination" ]; then
     fail "installed destination is not a regular file: $destination"
+fi
 
 say "Installed kendr-opt ${version#v} to $destination"
 case ":${PATH:-}:" in
