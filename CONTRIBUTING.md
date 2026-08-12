@@ -22,6 +22,7 @@ Before submitting a change:
        python -m unittest discover -s scripts/tests -p "test_*.py"
        python -m unittest discover -s benchmarks/runners/tests -p "test_*.py"
        python scripts/check_repository_hygiene.py
+       python scripts/build_third_party_licenses.py --check
        python benchmarks/runners/verify_release.py --release releases/v0.1.0-benchmark.5 --require-complete-attempts
        python benchmarks/runners/rank_release.py --release releases/v0.1.0-benchmark.5 --output benchmarks/rankings/v0.1.0-benchmark.5 --check
        python scripts/check_whitepaper_pdf.py

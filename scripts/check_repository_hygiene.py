@@ -68,6 +68,10 @@ CLAUDE_PLUGIN_DIRECTORY = PurePosixPath(
 CLAUDE_PLUGIN_MANIFEST = CLAUDE_PLUGIN_DIRECTORY / "plugin.json"
 NANOCLAW_SKILL = PurePosixPath("integrations/nanoclaw/skill/SKILL.md")
 REQUIRED_DISTRIBUTION_FILES = {
+    PurePosixPath("THIRD_PARTY_LICENSES.html"),
+    PurePosixPath("RUST_STDLIB_LICENSES.html"),
+    PurePosixPath("install/kendr-opt-installer.ps1"),
+    PurePosixPath("install/kendr-opt-installer.sh"),
     CLAUDE_PLUGIN_MANIFEST,
     NANOCLAW_SKILL,
     PurePosixPath("integrations/nanoclaw/skill/REMOVE.md"),

@@ -6,6 +6,8 @@
 *.mjs text eol=lf
 *.py text eol=lf
 *.rs text eol=lf
+*.ps1 text eol=lf
+*.sh text eol=lf
 *.toml text eol=lf
 *.ts text eol=lf
 *.yaml text eol=lf
@@ -18,6 +20,9 @@
 *.png binary
 *.wasm binary
 *.webp binary
+
+# Preserve the reviewed byte-exact Rust toolchain license bundle.
+/RUST_STDLIB_LICENSES.html -text whitespace=-trailing-space,-space-before-tab
 
 # Evidence and generated rankings are byte-addressed. Never normalize them.
 /releases/** -text

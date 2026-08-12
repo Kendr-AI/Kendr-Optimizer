@@ -11,7 +11,7 @@ documents, tool definitions, and tool results. It is a transformer, not a
 gateway: it never chooses a model, stores provider credentials, or forwards a
 request to an LLM.
 
-> Status: pre-alpha (`0.1.0`). The typed contract, safety controller, nine
+> Status: pre-alpha (`0.1.1`). The typed contract, safety controller, nine
 > native engines, CLI, loopback transform service, seven audited harness
 > integrations, reproducible rankings, and publication whitepaper exist.
 > Provider-verified savings and broad downstream non-inferiority are not yet
@@ -191,13 +191,50 @@ real E1 reduction.
 
 ## Quick start
 
-### Requirements
+### Install the CLI
 
-- Rust 1.88 or newer
-- Python 3.11 or newer only for benchmarks, ranking, and documentation builds
+The release installers download a native archive, verify its SHA-256 digest,
+smoke-test the binary, and then install `kendr-opt`. No Rust toolchain is
+required. The binaries are checksum-protected but are not yet OS code-signed.
 
-Pre-alpha installation is currently from source. Prebuilt signed binaries and
-container images are roadmap items, not silently implied by this README.
+macOS or Linux, when the repository/release is publicly accessible:
+
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf \
+  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.1/kendr-opt-installer.sh | sh
+```
+
+Windows PowerShell, when the repository/release is publicly accessible:
+
+```powershell
+irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.1/kendr-opt-installer.ps1 | iex
+```
+
+For a private repository, authenticate GitHub CLI first with `gh auth login`,
+then run one of these equivalent commands:
+
+```bash
+gh release download v0.1.1 -R Kendr-AI/Kendr-Optimizer \
+  -p kendr-opt-installer.sh -O - | sh
+```
+
+```powershell
+iex ((gh release download v0.1.1 -R Kendr-AI/Kendr-Optimizer `
+  -p kendr-opt-installer.ps1 -O -) -join "`n")
+```
+
+The default install directory is `$HOME/.local/bin` on macOS/Linux and
+`%LOCALAPPDATA%\Kendr\bin` on Windows. Set `KENDR_INSTALL_DIR` to override it.
+The POSIX installer prints a PATH command when needed; the PowerShell installer
+adds its directory to the user PATH unless `KENDR_NO_MODIFY_PATH=1`.
+
+Supported release targets are Windows x64, Linux x64/ARM64, and macOS
+Intel/Apple Silicon. Installers fail closed on unsupported platforms.
+
+### Build from source
+
+Source builds require Rust 1.88 or newer. Python 3.11 or newer is needed only
+for benchmarks, ranking, release packaging, and documentation builds.
 
 ### Build and test
 
@@ -478,11 +515,11 @@ ratio alone is not an acceptance criterion.
 
 The canonical source repository is
 [`Kendr-AI/Kendr-Optimizer`](https://github.com/Kendr-AI/Kendr-Optimizer).
-The `v0.1.0` GitHub pre-release is source-only; it does not imply that registry
-packages, signed binaries, or container images have been published. Reserve and
-verify ownership of the `@kendr` npm scope and crate/PyPI names before registry
-publication. Publish Rust packages in dependency order: contracts, core, then
-CLI.
+The `v0.1.1` GitHub pre-release publishes checksum-verified native CLI archives
+and installers. They are not yet OS code-signed. Registry packages and
+container images have not been published. Reserve and verify ownership of the
+`@kendr` npm scope and crate/PyPI names before registry publication. Publish
+Rust packages in dependency order: contracts, core, then CLI.
 
 ## License
 
