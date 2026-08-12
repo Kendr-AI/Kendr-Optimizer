@@ -938,6 +938,8 @@ mod tests {
             content: envelope.clone(),
             request_id: "pytest-reducer-test".to_owned(),
             ..serde_json::from_value(serde_json::json!({
+                "schema_version": "kendr.optimize/v1",
+                "phase": "tool_result",
                 "content": {"messages": []}
             }))
             .expect("minimal request")

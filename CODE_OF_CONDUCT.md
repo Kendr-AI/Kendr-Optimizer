@@ -56,7 +56,7 @@ acting as an appointed representative at an event.
 ## Enforcement
 
 Report abusive, harassing, or otherwise unacceptable behavior privately through
-a [GitHub security advisory](https://github.com/UnpredictablePrashant/KendrOptimizer/security/advisories/new),
+a [GitHub security advisory](https://github.com/Kendr-AI/Kendr-Optimizer/security/advisories/new),
 and state that the report concerns community conduct. If that private channel
 is unavailable, contact a maintainer through the contact information on their
 GitHub profile without placing sensitive details in a public issue.

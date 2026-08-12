@@ -14,7 +14,7 @@ Before opening an issue:
    application data from receipts and logs.
 
 Use a
-[bug report](https://github.com/UnpredictablePrashant/KendrOptimizer/issues/new/choose)
+[bug report](https://github.com/Kendr-AI/Kendr-Optimizer/issues/new/choose)
 for reproducible defects and a feature request for proposed behavior. Include
 the KendrOptimizer version or commit, interface or integration, operating
 system, Rust version, minimal input, expected behavior, actual behavior, and a
@@ -27,9 +27,9 @@ downstream model.
 
 ## Supported versions
 
-During pre-alpha development, fixes target the current `main` branch. After
-tagged software releases begin, the latest release will receive priority. Older
-versions may be asked to upgrade before a report is investigated.
+During pre-alpha development, fixes target the current `main` branch and the
+latest tagged pre-release. Older versions may be asked to upgrade before a
+report is investigated.
 
 ## Security and conduct
 

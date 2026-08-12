@@ -6,12 +6,12 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/UnpredictablePrashant/KendrOptimizer.git",
+    "url": "git+https://github.com/Kendr-AI/Kendr-Optimizer.git",
     "directory": "integrations/claude-code"
   },
-  "homepage": "https://github.com/UnpredictablePrashant/KendrOptimizer/tree/main/integrations/claude-code#readme",
+  "homepage": "https://github.com/Kendr-AI/Kendr-Optimizer/tree/main/integrations/claude-code#readme",
   "bugs": {
-    "url": "https://github.com/UnpredictablePrashant/KendrOptimizer/issues"
+    "url": "https://github.com/Kendr-AI/Kendr-Optimizer/issues"
   },
   "publishConfig": { "access": "public" },
   "engines": {

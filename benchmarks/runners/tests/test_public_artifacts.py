@@ -4,6 +4,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 
@@ -14,6 +15,7 @@ if str(RUNNERS) not in sys.path:
 from public_artifacts import (  # noqa: E402
     PublicAlias,
     PublicArtifactSanitizer,
+    default_aliases,
     file_sha256,
     verify_release,
 )
@@ -60,6 +62,21 @@ class PublicArtifactSanitizerTests(unittest.TestCase):
     def test_specific_release_alias_wins_over_project_root(self) -> None:
         sanitized, _ = self.sanitizer.sanitize_text(self.release)
         self.assertEqual(sanitized, "<RELEASE_ROOT>")
+
+    @mock.patch.dict("os.environ", {"USER": "runner", "USERNAME": "runner"})
+    @mock.patch("getpass.getuser", return_value="runner")
+    def test_hosted_ci_runner_is_not_treated_as_a_private_name(
+        self, _getuser: mock.Mock
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            release = root / "release"
+            aliases = default_aliases(root, release)
+
+        self.assertNotIn(
+            ("USER_NAME", "runner"),
+            {(alias.label, alias.private) for alias in aliases},
+        )
 
     def test_sanitize_tree_rewrites_utf8_artifacts_and_checks_afterward(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
