@@ -10,10 +10,11 @@ abstract: >-
   A model-neutral engine for reducing the token surface of LLM requests and
   future conversation context while returning verification results and an
   explicit optimization receipt.
-repository-code: https://github.com/UnpredictablePrashant/KendrOptimizer
-url: https://github.com/UnpredictablePrashant/KendrOptimizer
+repository-code: https://github.com/Kendr-AI/Kendr-Optimizer
+url: https://github.com/Kendr-AI/Kendr-Optimizer
 license: Apache-2.0
 version: 0.1.0
+date-released: 2026-08-12
 keywords:
   - large language models
   - token optimization

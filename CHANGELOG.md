@@ -7,6 +7,8 @@ once its pre-alpha contracts are declared stable.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-08-12
+
 ### Added
 
 - Provider-neutral contracts, native optimization engines, safety validation,
@@ -20,7 +22,19 @@ once its pre-alpha contracts are declared stable.
 
 - Crate manifests now include publication metadata, the project README and
   license, and registry versions alongside local workspace dependency paths.
-- Continuous integration now checks repository hygiene before publication.
+- Project, package, support, and citation links now use the canonical
+  `Kendr-AI/Kendr-Optimizer` repository.
+- Continuous integration now checks repository hygiene on branches and runs the
+  complete validation suite, including release metadata checks, for version tags.
+
+### Fixed
+
+- Generation-policy arithmetic now handles the full unsigned token-count range
+  without wrapping signed savings or bypassing configured thresholds.
+- Runtime request decoding now enforces the strict fields and object boundaries
+  declared by the published `kendr.optimize/v1` JSON Schema.
+- Benchmark evidence verification no longer treats GitHub's public `runner`
+  service account name as private data.
 
 Benchmark artifact revisions have their own immutable evidence and reports in
 `releases/`; they are not software version entries in this changelog.

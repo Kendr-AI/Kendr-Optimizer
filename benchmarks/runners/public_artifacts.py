@@ -17,6 +17,7 @@ from urllib.parse import quote
 
 LABEL_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+PUBLIC_SERVICE_ACCOUNTS = {"runner"}
 LOCAL_FILE_URI_RE = re.compile(
     r"file:///(?:[A-Za-z]:/|/(?:home|Users)/)[^\s\"'<>#]+",
     flags=re.IGNORECASE,
@@ -94,11 +95,12 @@ def default_aliases(project: Path, release: Path) -> list[PublicAlias]:
         )
         if value and value.strip()
     }
-    # Short account names such as "root" or "user" occur naturally in source and
-    # prose. Their home-directory paths are still covered above; longer account
+    # Short account names such as "root" or "user", and public CI identities such
+    # as GitHub's hosted "runner" account, occur naturally in source and prose.
+    # Their home-directory paths are still covered above; longer personal account
     # names are safe to redact as standalone private literals as well.
     for username in sorted(usernames):
-        if len(username) >= 6:
+        if len(username) >= 6 and username.casefold() not in PUBLIC_SERVICE_ACCOUNTS:
             candidates.append(PublicAlias("USER_NAME", username))
     return _deduplicate_aliases(candidates)
 

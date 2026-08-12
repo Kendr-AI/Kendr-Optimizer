@@ -475,14 +475,15 @@ ratio alone is not an acceptance criterion.
 - [Changelog](CHANGELOG.md)
 - [Citation metadata](CITATION.cff)
 
-## Before the first public tag
+## Package publication
 
-The source tree is prepared around the canonical prospective repository URL
-`UnpredictablePrashant/KendrOptimizer`. Creating that GitHub repository and
-enabling private security advisories are launch steps, not actions performed by
-the build. Reserve the `@kendr` npm scope and the crate/PyPI names before
-publishing artifacts; an unclaimed package name is not proof that the scope is
-owned. Publish Rust packages in dependency order: contracts, core, then CLI.
+The canonical source repository is
+[`Kendr-AI/Kendr-Optimizer`](https://github.com/Kendr-AI/Kendr-Optimizer).
+The `v0.1.0` GitHub pre-release is source-only; it does not imply that registry
+packages, signed binaries, or container images have been published. Reserve and
+verify ownership of the `@kendr` npm scope and crate/PyPI names before registry
+publication. Publish Rust packages in dependency order: contracts, core, then
+CLI.
 
 ## License
 

@@ -61,10 +61,9 @@ pub enum MeasurementConfidence {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct OptimizeRequest {
-    #[serde(default = "schema_version")]
     pub schema_version: String,
-    #[serde(default)]
     pub phase: OptimizePhase,
     #[serde(default)]
     pub request_id: String,
@@ -81,11 +80,8 @@ pub struct OptimizeRequest {
     pub policy: OptimizationPolicy,
 }
 
-fn schema_version() -> String {
-    SCHEMA_VERSION.to_owned()
-}
-
 #[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct ContentEnvelope {
     #[serde(default)]
     pub messages: Vec<Message>,
@@ -98,6 +94,7 @@ pub struct ContentEnvelope {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct Message {
     pub id: String,
     pub role: MessageRole,
@@ -105,7 +102,6 @@ pub struct Message {
     pub parent_id: Option<String>,
     #[serde(default)]
     pub turn_id: Option<String>,
-    #[serde(default)]
     pub parts: Vec<ContentPart>,
     #[serde(default)]
     pub metadata: BTreeMap<String, Value>,

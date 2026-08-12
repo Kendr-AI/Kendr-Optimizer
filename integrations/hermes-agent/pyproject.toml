@@ -14,10 +14,10 @@ authors = [{ name = "Kendr Optimizer contributors" }]
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/UnpredictablePrashant/KendrOptimizer"
-Repository = "https://github.com/UnpredictablePrashant/KendrOptimizer"
-Issues = "https://github.com/UnpredictablePrashant/KendrOptimizer/issues"
-Documentation = "https://github.com/UnpredictablePrashant/KendrOptimizer/tree/main/integrations/hermes-agent#readme"
+Homepage = "https://github.com/Kendr-AI/Kendr-Optimizer"
+Repository = "https://github.com/Kendr-AI/Kendr-Optimizer"
+Issues = "https://github.com/Kendr-AI/Kendr-Optimizer/issues"
+Documentation = "https://github.com/Kendr-AI/Kendr-Optimizer/tree/main/integrations/hermes-agent#readme"
 
 [project.entry-points."hermes_agent.plugins"]
 kendr-optimizer = "kendr_hermes_plugin"
