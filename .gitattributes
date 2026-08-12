@@ -1,6 +1,7 @@
 * text=auto
 
 *.json text eol=lf
+*.hbs text eol=lf
 *.lock text eol=lf
 *.md text eol=lf
 *.mjs text eol=lf

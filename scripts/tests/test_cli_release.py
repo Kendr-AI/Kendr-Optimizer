@@ -120,6 +120,13 @@ class CliReleaseTests(unittest.TestCase):
         version = workspace["workspace"]["package"]["version"]
         self.assertTrue((ROOT / f"docs/releases/v{version}.md").is_file())
 
+        draft_verification = workflow.split(
+            "- name: Verify uploaded asset digests", maxsplit=1
+        )[1].split("- name: Publish prerelease", maxsplit=1)[0]
+        self.assertIn('gh release view "${GITHUB_REF_NAME}"', draft_verification)
+        self.assertNotIn("releases/tags/", draft_verification)
+        self.assertIn('release["isDraft"] is True', draft_verification)
+
     def test_version_validation_rejects_unsafe_values(self) -> None:
         for version in ("0.1.1", "1.2.3-rc.1", "1.2.3+build.7"):
             with self.subTest(version=version):
