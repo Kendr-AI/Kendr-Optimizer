@@ -60,11 +60,14 @@ trap cleanup EXIT HUP INT TERM
 
 installer_test_download=0
 if [ -n "${KENDR_DOWNLOAD_BASE_URL:-}" ]; then
-    [ "${KENDR_INSTALLER_TEST_MODE:-}" = "1" ] &&
-        [ "${KENDR_ALLOW_INSECURE:-}" = "1" ] &&
-        printf '%s\n' "$KENDR_DOWNLOAD_BASE_URL" |
-            grep -Eq '^http://127\.0\.0\.1:[0-9]+/?$' ||
+    if [ "${KENDR_INSTALLER_TEST_MODE:-}" != "1" ] ||
+        [ "${KENDR_ALLOW_INSECURE:-}" != "1" ]; then
         fail "KENDR_DOWNLOAD_BASE_URL is restricted to numeric loopback installer tests"
+    fi
+    if ! printf '%s\n' "$KENDR_DOWNLOAD_BASE_URL" |
+        grep -Eq '^http://127\.0\.0\.1:[0-9]+/?$'; then
+        fail "KENDR_DOWNLOAD_BASE_URL is restricted to numeric loopback installer tests"
+    fi
     installer_test_download=1
 fi
 
