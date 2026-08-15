@@ -10,6 +10,25 @@ Status: pre-alpha (`0.1.2`). Kendr transforms supported prompt, context, and
 tool-output surfaces locally. Your harness still owns provider credentials,
 model selection, routing, streaming, and billing.
 
+## Claude Code Demo
+
+<p align="center">
+  <a href="docs/assets/kendr-claude-code-demo.mp4">
+    <img src="docs/assets/kendr-claude-code-demo-poster.png" width="960" alt="Kendr Optimizer and Claude Code installation and execution walkthrough">
+  </a>
+</p>
+
+<p align="center">
+  <a href="docs/assets/kendr-claude-code-demo.mp4">Watch the 60-second install → configure → run → verify walkthrough</a>
+</p>
+
+The walkthrough shows a current-source `0.1.2` installation, isolated setup,
+the Claude Code launch command, and a live successful `PostToolUse` output
+replacement. For the captured ANSI-heavy payload, Kendr's conservative local
+preflight estimate moves from 912 to 279 tokens (69.41%). This is a
+workload-specific local reduction, not provider-billed or whole-session
+savings.
+
 ## Install
 
 Install the CLI from the public GitHub Release. No Rust toolchain, repository

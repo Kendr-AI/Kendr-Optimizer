@@ -7,7 +7,7 @@ once its pre-alpha contracts are declared stable.
 
 ## [Unreleased]
 
-## [0.1.2] - 2026-08-15
+## [0.1.2] - 2026-08-16
 
 ### Added
 
@@ -18,6 +18,8 @@ once its pre-alpha contracts are declared stable.
   harness, and stops the service when that harness exits.
 - GitHub Releases now carry installable Node adapter tarballs, a Hermes wheel,
   and the guarded NanoClaw skill archive alongside the native CLI binaries.
+- The README now includes a Claude Code install-to-execution walkthrough with
+  a workload-specific local preflight comparison and explicit billing caveat.
 
 ### Changed
 

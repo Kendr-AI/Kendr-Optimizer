@@ -57,3 +57,6 @@
 # immutable evidence and must remain eligible for version control.
 *.log
 !/releases/**/*.log
+
+# Generated local demo media and execution evidence
+/output/kendr-claude-code-demo/
