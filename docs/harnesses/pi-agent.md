@@ -52,7 +52,7 @@ The package declares:
 
 The normal user path is `kendr-opt run pi`, which writes the compiled extension
 to Pi's global extension directory. The GitHub Release also includes
-`kendr-optimizer-pi-0.1.2.tgz` for managed package installation; no npm
+`kendr-optimizer-pi-0.1.3.tgz` for managed package installation; no npm
 registry publication is required.
 
 ## Verification and upgrade gate

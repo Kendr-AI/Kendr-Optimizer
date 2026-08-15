@@ -7,6 +7,50 @@ once its pre-alpha contracts are declared stable.
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-08-16
+
+### Added
+
+- `kendr-opt update --check` reports the newest published channel release when
+  it passes every update gate, while `kendr-opt update` downloads, verifies,
+  and installs it; both commands support versioned JSON output and explicit
+  `preview` or `stable` channels.
+- `kendr-opt update --reinstall` provides a same-version repair path through the
+  complete updater verification chain without permitting a downgrade.
+- Interactive `setup` and `run` commands can show a rate-limited update notice;
+  successful checks are cached for 24 hours, failures back off for six hours,
+  and `KENDR_NO_UPDATE_CHECK=1` disables passive checks.
+- Official installers now write a versioned, target-bound install receipt next
+  to the executable so the CLI has an explicit marker for an installer-managed
+  standalone installation.
+
+### Changed
+
+- Release publication and self-update eligibility now require GitHub immutable
+  Releases. The updater selects releases by semantic version instead of relying
+  on GitHub's `latest` designation, so pre-alpha prereleases remain discoverable
+  on the default `preview` channel.
+- Setup automatically replaces an older same-name Kendr OpenClaw adapter while
+  continuing to require `--force` for an unmanaged or conflicting exclusive
+  OpenClaw slot.
+- Bundled adapter package metadata, runtime version identifiers, marketplace
+  metadata, and manual-install artifact names are synchronized at `0.1.3`.
+
+### Security
+
+- The updater pins the public GitHub repository identity, requires a published
+  immutable release, cross-checks GitHub SHA-256 asset digests with the exact
+  `SHA256SUMS` asset set, validates archive layout and limits, smoke-tests the
+  candidate, and rechecks release metadata before replacement.
+- Executable replacement is restricted to a matching official install receipt
+  unless `--force` explicitly authorizes a standalone binary. The installed
+  candidate is validated again and the previous executable is restored when
+  post-install validation fails.
+- Updater traffic is limited to GitHub repository/release metadata and release
+  assets; no prompt, tool output, provider credential, or Kendr.org request is
+  sent. GitHub immutability and checksums provide integrity, not an independent
+  maintainer signature or operating-system code signature.
+
 ## [0.1.2] - 2026-08-16
 
 ### Added

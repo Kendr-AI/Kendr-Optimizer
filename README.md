@@ -20,7 +20,7 @@ LLM agent workloads. It reduces redundant prompt, context, and tool-output
 payloads locally, then hands control back to the host that already owns the
 model, credentials, routing, streaming, retries, and billing.
 
-**Status:** pre-alpha (`0.1.2`) · **Core:** Rust · **License:** Apache-2.0
+**Status:** pre-alpha (`0.1.3`) · **Core:** Rust · **License:** Apache-2.0
 
 [Install](#install-in-two-commands) · [Watch the demo](#60-second-claude-code-demo) ·
 [Inspect every benchmark row](#complete-preservation-gated-ranking) ·
@@ -62,13 +62,13 @@ this was not a third-party audit.
 [Inspect the full peer report](releases/v0.1.0-benchmark.5/report.md) ·
 [Open the immutable evidence bundle](releases/v0.1.0-benchmark.5/README.md)
 
-The frozen bundle identifies the measured Kendr build as `0.1.0-dev`; `0.1.2`
+The frozen bundle identifies the measured Kendr build as `0.1.0-dev`; `0.1.3`
 is the current installable distribution. These figures are not relabeled as a
-fresh `0.1.2` benchmark.
+fresh `0.1.3` benchmark.
 
 ## Install in two commands
 
-Install the native CLI from the public `v0.1.2` GitHub Release. You do not need
+Install the native CLI from the public `v0.1.3` GitHub Release. You do not need
 a Rust toolchain, source checkout, npm publication, PyPI publication, or a
 Kendr-specific provider key; your harness keeps its existing authentication.
 
@@ -76,13 +76,13 @@ macOS or Linux:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr-opt-installer.sh | sh
+  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr-opt-installer.ps1 | iex
+irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.ps1 | iex
 ```
 
 Then launch a supported LLM CLI through Kendr:
@@ -107,16 +107,52 @@ kendr-opt setup
 ```
 
 Prefer to inspect before installing? Open the
-[`v0.1.2` release](https://github.com/Kendr-AI/Kendr-Optimizer/releases/tag/v0.1.2)
+[`v0.1.3` release](https://github.com/Kendr-AI/Kendr-Optimizer/releases/tag/v0.1.3)
 for native archives, SHA-256 checksums, adapter packages, license notices, and
 release notes.
+
+### Keep Kendr current
+
+After installing a release that includes the updater, check without changing
+the executable or install the newest published release on the selected channel
+when it passes every update gate:
+
+```bash
+kendr-opt update --check
+kendr-opt update
+```
+
+Official installs retain the channel recorded by their installer; while Kendr
+is pre-alpha that channel is `preview`. Add `--json` to either command for a
+versioned machine-readable result, or add `--channel stable` to ignore
+prereleases.
+
+The published `v0.1.2` binary predates `kendr-opt update`. Bootstrap it once by
+installing the first newer release manually from the
+[GitHub Releases page](https://github.com/Kendr-AI/Kendr-Optimizer/releases),
+using that release's installer. Later releases can update themselves.
+
+Interactive `kendr-opt setup` and `kendr-opt run` commands may print a cached
+update notice to stderr. Successful checks are cached for 24 hours; redirected
+stderr (no terminal) and CI do not trigger them. Set
+`KENDR_NO_UPDATE_CHECK=1` to disable passive checks. Explicit
+`kendr-opt update` commands remain available.
+
+The updater contacts only the compiled public GitHub repository and its release
+asset delivery path. It never sends prompts, tool output, provider credentials,
+or traffic to Kendr.org, and the optimization core remains network-free. An
+update is accepted only from a published GitHub Release reported as immutable;
+Kendr verifies GitHub's asset digests, the release `SHA256SUMS`, archive layout,
+and the candidate binary before replacement. These checks detect mismatches and
+post-publication changes, but they are not a maintainer signature or OS code
+signature. See the [full update and security contract](docs/cli-provider-integration.md#cli-updates).
 
 ## 60-second Claude Code demo
 
 https://github.com/user-attachments/assets/73ad4f7b-3d5e-466f-97dd-6b93136440f4
 
 <p align="center">
-  <a href="docs/assets/kendr-claude-code-demo.mp4">Download the install → configure → run → verify walkthrough</a>
+  <a href="docs/assets/kendr-claude-code-demo.mp4">Download the install - configure - run - verify walkthrough</a>
 </p>
 
 The walkthrough shows a current-source `0.1.2` installation, isolated setup,
@@ -322,7 +358,7 @@ project's evidence and review expectations.
 </details>
 
 The whitepaper describes the core `0.1.0` method and
-`v0.1.0-benchmark.5` evidence. The installable CLI is currently `0.1.2`.
+`v0.1.0-benchmark.5` evidence. The installable CLI is currently `0.1.3`.
 
 ## Project status
 

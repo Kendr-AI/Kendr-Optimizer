@@ -17,15 +17,15 @@ Kendr. It does not implement `/chat/completions`, `/responses`, or `/messages`.
 
 ## Two-command path
 
-Install from the public `v0.1.2` GitHub Release:
+Install from the public `v0.1.3` GitHub Release:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr-opt-installer.sh | sh
+  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.sh | sh
 ```
 
 ```powershell
-irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr-opt-installer.ps1 | iex
+irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.ps1 | iex
 ```
 
 Launch a supported, already-installed harness:
@@ -86,6 +86,121 @@ Adapter storage defaults:
 Set `KENDR_HOME` to change Kendr's adapter data directory. On Windows it
 otherwise uses `%LOCALAPPDATA%\Kendr`; on macOS and Linux it uses
 `$XDG_DATA_HOME/kendr` or `~/.local/share/kendr`.
+
+## CLI updates
+
+### Check and install
+
+The native CLI can check its release channel without modifying the executable:
+
+```bash
+kendr-opt update --check
+kendr-opt update --check --json
+```
+
+The JSON form emits one `kendr.update/v1` object on stdout with the status,
+current and latest versions, channel, release identity and immutability state,
+target archive and digest, release URL, check time, and updated executable path
+when applicable. An available update is a successful check, not a command
+failure.
+
+Install the newest published channel release after it passes every gate with:
+
+```bash
+kendr-opt update
+kendr-opt update --json
+```
+
+Official installs retain the channel in their install receipt. The current
+installers record `preview`, which considers both published prereleases and full
+releases and selects the highest semantic version. That newest release must
+itself be immutable and complete; Kendr fails closed instead of silently falling
+back to an older release. An unreceipted standalone check also defaults to
+`preview`. To ignore prereleases, use:
+
+```bash
+kendr-opt update --check --channel stable
+kendr-opt update --channel stable
+```
+
+The published `v0.1.2` executable predates this command. Upgrade from it once by
+opening the [GitHub Releases page](https://github.com/Kendr-AI/Kendr-Optimizer/releases)
+and running the installer shipped with the first newer release. The installed
+updater can handle later releases.
+
+The updater replaces the exact executable that is running. It refuses symbolic
+links, reparse points, unwritable locations, and unrecognized install locations.
+An official install receipt authorizes normal replacement. If a standalone
+binary was deliberately copied without that receipt, `kendr-opt update --force`
+authorizes that destination. `--force` does **not** bypass release-channel selection,
+immutability, asset, checksum, archive, or candidate-binary checks. A CLI managed
+by another package manager should be updated through that package manager.
+The adjacent receipt is an ownership marker, not a signature or hash binding;
+a same-directory writer or copied/stale matching receipt is outside this guard.
+
+After an executable update, its bundled adapters refresh on the next
+`kendr-opt setup` or `kendr-opt run`.
+
+`kendr-opt update --reinstall` re-verifies and reinstalls the same eligible
+version. It is intended for repair and release smoke testing; it never permits a
+downgrade or bypasses any trust check.
+
+### Passive notices and cache
+
+Before an interactive `kendr-opt setup` or `kendr-opt run`, the CLI may check
+for a newer release and print one concise notice to stderr. Passive checks:
+
+- run only when stderr is attached to a terminal;
+- never run for `--help`, `--version`, JSON transformation commands,
+  `engines`, `serve`, or `setup --list`;
+- are disabled when `CI` or `GITHUB_ACTIONS` is present;
+- cache a successful result for 24 hours and back off for six hours after a
+  failed check; and
+- repeat a notice for the same installed/latest pair no more than once per 24
+  hours.
+
+Set `KENDR_NO_UPDATE_CHECK=1` to disable passive checks. This does not disable an
+explicit `kendr-opt update` or `kendr-opt update --check` command.
+
+The cache is `update.json` under `%LOCALAPPDATA%\Kendr\cache` on Windows,
+`$XDG_CACHE_HOME/kendr` when set, or `~/.cache/kendr` otherwise. `KENDR_HOME`
+relocates it to `$KENDR_HOME/cache`.
+
+### Release and network boundary
+
+The production updater is compiled for the public
+`Kendr-AI/Kendr-Optimizer` GitHub repository. Its only intentional outbound
+traffic is repository identity, release metadata, and selected release assets
+from GitHub's API and HTTPS asset-delivery path. It does not send normalized
+envelopes, prompts, tool output, recovery data, provider credentials, provider
+URLs, or model configuration. It does not contact Kendr.org. The Rust core has
+no networking dependency; normal optimization and the loopback transform
+service do not use the updater's HTTP client.
+
+The updater accepts only a published release that GitHub reports as immutable.
+Before replacing the executable it:
+
+1. verifies the compiled repository identity and release channel;
+2. requires the platform archive and `SHA256SUMS` to have GitHub-recorded
+   SHA-256 digests;
+3. requires `SHA256SUMS` to cover the exact release asset set and agree with
+   GitHub's digests;
+4. checks the downloaded archive, expected member list, paths, permissions, and
+   size limits;
+5. runs the candidate's `--version` and `engines --compact` smoke tests; and
+6. fetches the release again and rejects changes to the security-relevant
+   release fingerprint before replacement.
+
+Release immutability prevents accepted assets from being changed afterward.
+SHA-256 detects corruption and disagreement between downloaded artifacts and
+GitHub's recorded release state. Neither mechanism proves who originally
+published the release: the binaries are not yet protected by a maintainer
+signature, Sigstore identity, or OS code signature. A compromise of the GitHub
+organization, release workflow, or initial immutable upload remains a
+supply-chain risk. Backup-backed rollback covers detected replacement and
+post-install validation failures, but it is not a power-loss-safe transaction
+or journal. Review [the threat model](threat-model.md#supply-chain-and-extensions)
+before unattended deployment.
 
 ## Provider configuration
 
@@ -212,23 +327,23 @@ PyPI publication is required.
 
 | Asset | Use |
 | --- | --- |
-| `kendr-optimizer-opencode-0.1.2.tgz` | Manual OpenCode package deployment |
-| `kendr-optimizer-claude-code-0.1.2.tgz` | Manual Claude Code plugin/bridge deployment |
-| `kendr-optimizer-claude-channels-0.1.2.tgz` | Channel-server library deployment |
-| `kendr-optimizer-pi-0.1.2.tgz` | Manual Pi package deployment |
-| `kendr-optimizer-openclaw-0.1.2.tgz` | Manual OpenClaw package deployment |
-| `kendr_optimizer_hermes-0.1.2-py3-none-any.whl` | Manual Hermes environment deployment |
-| `kendr-optimizer-nanoclaw-0.1.2.tar.gz` | Guarded NanoClaw customization skill |
+| `kendr-optimizer-opencode-0.1.3.tgz` | Manual OpenCode package deployment |
+| `kendr-optimizer-claude-code-0.1.3.tgz` | Manual Claude Code plugin/bridge deployment |
+| `kendr-optimizer-claude-channels-0.1.3.tgz` | Channel-server library deployment |
+| `kendr-optimizer-pi-0.1.3.tgz` | Manual Pi package deployment |
+| `kendr-optimizer-openclaw-0.1.3.tgz` | Manual OpenClaw package deployment |
+| `kendr_optimizer_hermes-0.1.3-py3-none-any.whl` | Manual Hermes environment deployment |
+| `kendr-optimizer-nanoclaw-0.1.3.tar.gz` | Guarded NanoClaw customization skill |
 
 Package managers can install a release URL directly when a managed deployment
 needs that form. For example:
 
 ```bash
-npm install -g https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr-optimizer-claude-code-0.1.2.tgz
+npm install -g https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-optimizer-claude-code-0.1.3.tgz
 ```
 
 ```bash
-python -m pip install https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr_optimizer_hermes-0.1.2-py3-none-any.whl
+python -m pip install https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr_optimizer_hermes-0.1.3-py3-none-any.whl
 ```
 
 ## Adding another CLI

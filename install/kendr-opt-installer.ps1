@@ -6,14 +6,24 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$DefaultVersion = 'v0.1.2'
+$DefaultVersion = 'v0.1.3'
 $Repository = 'Kendr-AI/Kendr-Optimizer'
 
 if ([string]::IsNullOrWhiteSpace($Version)) {
     $Version = $DefaultVersion
 }
-if ($Version -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$') {
+if ($Version -notmatch '^v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z][0-9A-Za-z-]*(?:\.[0-9A-Za-z][0-9A-Za-z-]*)*)?$') {
     throw "Invalid release version: $Version"
+}
+
+$InstallerTestDownload = $false
+if (-not [string]::IsNullOrWhiteSpace($env:KENDR_DOWNLOAD_BASE_URL)) {
+    if ($env:KENDR_INSTALLER_TEST_MODE -ne '1' -or
+        $env:KENDR_ALLOW_INSECURE -ne '1' -or
+        $env:KENDR_DOWNLOAD_BASE_URL -notmatch '^http://127\.0\.0\.1:[0-9]+/?$') {
+        throw 'KENDR_DOWNLOAD_BASE_URL is restricted to numeric loopback installer tests.'
+    }
+    $InstallerTestDownload = $true
 }
 
 if (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform(
@@ -41,6 +51,10 @@ $TempRoot = Join-Path ([System.IO.Path]::GetTempPath()) (
     'kendr-opt-' + [System.Guid]::NewGuid().ToString('N')
 )
 $StagedPath = $null
+$StagedReceipt = $null
+$BinaryBackup = $null
+$ReceiptBackup = $null
+$KeepBinaryBackup = $false
 
 function Test-GitHubCliAuthentication {
     if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
@@ -56,10 +70,9 @@ function Get-ReleaseAsset {
         [Parameter(Mandatory = $true)][string]$Destination
     )
 
-    if ([string]::IsNullOrWhiteSpace($env:KENDR_DOWNLOAD_BASE_URL) -and
-        (Test-GitHubCliAuthentication)) {
+    if (-not $InstallerTestDownload -and (Test-GitHubCliAuthentication)) {
         & gh release download $Version `
-            --repo $Repository `
+            --repo "github.com/$Repository" `
             --pattern $Name `
             --output $Destination
         if ($LASTEXITCODE -ne 0) {
@@ -68,14 +81,10 @@ function Get-ReleaseAsset {
         return
     }
 
-    $BaseUrl = $env:KENDR_DOWNLOAD_BASE_URL
-    if ([string]::IsNullOrWhiteSpace($BaseUrl)) {
-        $BaseUrl = "https://github.com/$Repository/releases/download/$Version"
-    }
-    if ($BaseUrl -notmatch '^https://') {
-        if ($BaseUrl -notmatch '^http://' -or $env:KENDR_ALLOW_INSECURE -ne '1') {
-            throw 'The download URL must use HTTPS.'
-        }
+    $BaseUrl = if ($InstallerTestDownload) {
+        $env:KENDR_DOWNLOAD_BASE_URL
+    } else {
+        "https://github.com/$Repository/releases/download/$Version"
     }
 
     [Net.ServicePointManager]::SecurityProtocol =
@@ -201,30 +210,105 @@ try {
 
     New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
     $Destination = Join-Path $InstallDir 'kendr-opt.exe'
-    if (Test-Path -LiteralPath $Destination) {
-        $DestinationItem = Get-Item -LiteralPath $Destination -Force
+    $Receipt = Join-Path $InstallDir '.kendr-opt-install.json'
+    $DestinationItem = Get-Item -LiteralPath $Destination -Force -ErrorAction SilentlyContinue
+    if ($null -ne $DestinationItem) {
         if ($DestinationItem.PSIsContainer -or
             (($DestinationItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {
             throw "Existing destination is not a regular file: $Destination"
         }
     }
+    $ReceiptItem = Get-Item -LiteralPath $Receipt -Force -ErrorAction SilentlyContinue
+    if ($null -ne $ReceiptItem) {
+        if ($ReceiptItem.PSIsContainer -or
+            (($ReceiptItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {
+            throw "Existing install receipt is not a regular file: $Receipt"
+        }
+    }
+
     $StagedPath = Join-Path $InstallDir (
         '.kendr-opt.' + [System.Guid]::NewGuid().ToString('N') + '.tmp.exe'
     )
     Copy-Item -LiteralPath $Candidate -Destination $StagedPath
-    if (Test-Path -LiteralPath $Destination) {
-        $Backup = Join-Path $InstallDir (
-            '.kendr-opt.' + [System.Guid]::NewGuid().ToString('N') + '.backup.exe'
-        )
-        try {
-            [IO.File]::Replace($StagedPath, $Destination, $Backup, $true)
+
+    $StagedReceipt = Join-Path $InstallDir (
+        '.kendr-opt-install.' + [System.Guid]::NewGuid().ToString('N') + '.tmp.json'
+    )
+    $ReceiptPayload = [ordered]@{
+        schema_version = 'kendr.install/v1'
+        repository = $Repository
+        install_method = 'github-release'
+        target = $Target
+        version = $Version.Substring(1)
+        channel = 'preview'
+    }
+    $ReceiptJson = $ReceiptPayload | ConvertTo-Json -Compress
+    [IO.File]::WriteAllText(
+        $StagedReceipt,
+        $ReceiptJson + [Environment]::NewLine,
+        [Text.UTF8Encoding]::new($false)
+    )
+
+    $DestinationExisted = $null -ne $DestinationItem
+    $ReceiptExisted = $null -ne $ReceiptItem
+    $BinaryInstalled = $false
+    try {
+        if ($DestinationExisted) {
+            $BinaryBackup = Join-Path $InstallDir (
+                '.kendr-opt.' + [System.Guid]::NewGuid().ToString('N') + '.backup.exe'
+            )
+            [IO.File]::Replace($StagedPath, $Destination, $BinaryBackup, $true)
             $StagedPath = $null
-        } finally {
-            Remove-Item -LiteralPath $Backup -Force -ErrorAction SilentlyContinue
+        } else {
+            [IO.File]::Move($StagedPath, $Destination)
+            $StagedPath = $null
         }
-    } else {
-        [IO.File]::Move($StagedPath, $Destination)
-        $StagedPath = $null
+        $BinaryInstalled = $true
+
+        if ($ReceiptExisted) {
+            $ReceiptBackup = Join-Path $InstallDir (
+                '.kendr-opt-install.' + [System.Guid]::NewGuid().ToString('N') + '.backup.json'
+            )
+            [IO.File]::Replace($StagedReceipt, $Receipt, $ReceiptBackup, $true)
+            $StagedReceipt = $null
+        } else {
+            [IO.File]::Move($StagedReceipt, $Receipt)
+            $StagedReceipt = $null
+        }
+    } catch {
+        $InstallError = $_
+        if (-not $BinaryInstalled) {
+            throw $InstallError
+        }
+        if ($BinaryInstalled) {
+            try {
+                if ($DestinationExisted -and
+                    $BinaryBackup -and
+                    (Test-Path -LiteralPath $BinaryBackup -PathType Leaf)) {
+                    $FailedBinary = Join-Path $InstallDir (
+                        '.kendr-opt.' + [System.Guid]::NewGuid().ToString('N') + '.failed.exe'
+                    )
+                    [IO.File]::Replace($BinaryBackup, $Destination, $FailedBinary, $true)
+                    $BinaryBackup = $null
+                    Remove-Item -LiteralPath $FailedBinary -Force -ErrorAction SilentlyContinue
+                } elseif (-not $DestinationExisted) {
+                    Remove-Item -LiteralPath $Destination -Force -ErrorAction Stop
+                }
+            } catch {
+                $KeepBinaryBackup = $true
+                throw "Install receipt failed and the previous kendr-opt could not be restored. Rollback copy: $BinaryBackup. $($InstallError.Exception.Message)"
+            }
+        }
+        throw "Install receipt failed; the binary installation was rolled back. $($InstallError.Exception.Message)"
+    }
+
+    if ($BinaryBackup) {
+        Remove-Item -LiteralPath $BinaryBackup -Force -ErrorAction SilentlyContinue
+        $BinaryBackup = $null
+    }
+    if ($ReceiptBackup) {
+        Remove-Item -LiteralPath $ReceiptBackup -Force -ErrorAction SilentlyContinue
+        $ReceiptBackup = $null
     }
 
     if ($env:KENDR_NO_MODIFY_PATH -notin @('1', 'true', 'TRUE')) {
@@ -244,6 +328,15 @@ try {
 } finally {
     if ($StagedPath) {
         Remove-Item -LiteralPath $StagedPath -Force -ErrorAction SilentlyContinue
+    }
+    if ($StagedReceipt) {
+        Remove-Item -LiteralPath $StagedReceipt -Force -ErrorAction SilentlyContinue
+    }
+    if ($BinaryBackup -and -not $KeepBinaryBackup) {
+        Remove-Item -LiteralPath $BinaryBackup -Force -ErrorAction SilentlyContinue
+    }
+    if ($ReceiptBackup) {
+        Remove-Item -LiteralPath $ReceiptBackup -Force -ErrorAction SilentlyContinue
     }
     Remove-Item -LiteralPath $TempRoot -Recurse -Force -ErrorAction SilentlyContinue
 }

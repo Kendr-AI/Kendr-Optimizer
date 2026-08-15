@@ -45,7 +45,7 @@ def inputs_digest() -> str:
 
 
 def add_markers(rendered: str) -> str:
-    lines = rendered.replace("\r\n", "\n").splitlines()
+    lines = [line.rstrip() for line in rendered.replace("\r\n", "\n").splitlines()]
     if not lines:
         raise ValueError("cargo-about generated an empty document")
     body = "\n".join(lines) + "\n"

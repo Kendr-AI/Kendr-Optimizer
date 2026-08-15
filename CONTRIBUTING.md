@@ -17,8 +17,8 @@ Before submitting a change:
 5. Run:
 
        cargo fmt --all -- --check
-       cargo clippy --workspace --all-targets -- -D warnings
-       cargo test --workspace --locked
+       cargo clippy --workspace --all-targets --all-features -- -D warnings
+       cargo test --workspace --all-features --locked
        python -m unittest discover -s scripts/tests -p "test_*.py"
        python -m unittest discover -s benchmarks/runners/tests -p "test_*.py"
        python scripts/check_repository_hygiene.py
@@ -38,5 +38,16 @@ artifacts must not contain machine-specific user-profile paths, generated
 caches, or repository-development assistant control files. Target-harness
 plugin and skill packaging under `integrations/` remains part of the product and
 is checked through narrow, audited exceptions.
+
+Before pushing any release tag, a repository administrator must verify that
+GitHub release immutability is enabled:
+
+    gh api --hostname github.com repos/Kendr-AI/Kendr-Optimizer/immutable-releases \
+      -H "X-GitHub-Api-Version: 2026-03-10" --jq '.enabled'
+
+The result must be `true`. This endpoint requires repository Administration
+read access, which the standard Actions `GITHUB_TOKEN` cannot request; the tag
+workflow therefore also checks the published release's `immutable` field and
+fails if GitHub does not seal it.
 
 Contributions are accepted under Apache-2.0.

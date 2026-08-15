@@ -311,10 +311,19 @@ fn setup_openclaw(paths: &InstallPaths, force: bool) -> Result<(), Box<dyn std::
     } else if installed_version == env!("CARGO_PKG_VERSION") {
         false
     } else {
-        return Err(other_error(format!(
-            "OpenClaw has Kendr adapter {installed_version}; re-run with --force to replace it with {}.",
-            env!("CARGO_PKG_VERSION")
-        )));
+        let installed = semver::Version::parse(installed_version).map_err(|_| {
+            other_error(format!(
+                "OpenClaw reports an unrecognized Kendr adapter version {installed_version:?}; re-run with --force to replace it."
+            ))
+        })?;
+        let bundled = semver::Version::parse(env!("CARGO_PKG_VERSION"))?;
+        if installed > bundled {
+            return Err(other_error(format!(
+                "OpenClaw has newer Kendr adapter {installed}; use a matching/newer CLI, or re-run with --force to replace it with {bundled}."
+            )));
+        }
+        run_checked("openclaw", &["plugins", "uninstall", "kendr-optimizer"])?;
+        true
     };
     if should_install {
         run_checked_os(
