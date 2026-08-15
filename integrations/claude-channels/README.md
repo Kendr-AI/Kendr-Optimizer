@@ -20,12 +20,16 @@ The helper requires `senderAuthorized: true`. Any other value returns the origin
 
 ## Install and use
 
-Start the local transform-only core:
+Install the package directly from the GitHub Release, then start the local
+optimizer:
 
 ```powershell
-cargo run -p kendr-optimizer-cli -- serve --bind 127.0.0.1:7331
-npm install @kendr/optimizer-claude-channels
+npm install https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr-optimizer-claude-channels-0.1.2.tgz
+kendr-opt serve --bind 127.0.0.1:7331
 ```
+
+No npm registry publication is required. This is a source-side library, so the
+channel server owns its process lifecycle and calls the adapter explicitly.
 
 Use the helper inside the channel MCP server, after its existing sender gate:
 

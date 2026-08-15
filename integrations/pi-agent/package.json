@@ -1,6 +1,6 @@
 {
   "name": "@kendr/optimizer-pi",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Provider-neutral Pi extension for the Kendr transform-only optimizer",
   "type": "module",
   "license": "Apache-2.0",
@@ -13,8 +13,14 @@
   "bugs": {
     "url": "https://github.com/Kendr-AI/Kendr-Optimizer/issues"
   },
-  "publishConfig": { "access": "public" },
-  "keywords": ["pi-package", "prompt-optimization", "token-optimization"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "pi-package",
+    "prompt-optimization",
+    "token-optimization"
+  ],
   "engines": {
     "node": ">=22.19"
   },
@@ -34,7 +40,9 @@
     "README.md"
   ],
   "pi": {
-    "extensions": ["./dist/index.js"]
+    "extensions": [
+      "./dist/index.js"
+    ]
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

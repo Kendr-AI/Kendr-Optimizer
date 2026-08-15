@@ -19,29 +19,17 @@ OpenCode V1's hook runner propagates plugin exceptions. Each Kendr hook therefor
 
 ## Install
 
-Start the transform-only core:
+The normal user path is:
 
 ```powershell
-cargo run -p kendr-optimizer-cli -- serve --bind 127.0.0.1:7331
+kendr-opt run opencode
 ```
 
-Add the published package to `opencode.json`:
-
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugin": ["@kendr/optimizer-opencode"]
-}
-```
-
-OpenCode installs configured npm plugins with Bun. For local development, install this package in your OpenCode configuration environment and add a one-export shim:
-
-```typescript
-// .opencode/plugins/kendr-optimizer.ts
-export { KendrOptimizerPlugin } from "@kendr/optimizer-opencode"
-```
-
-The module intentionally exposes one named V1 plugin function, `KendrOptimizerPlugin`.
+`kendr-opt` installs the dependency-free `dist/kendr-optimizer.js` bundle in
+OpenCode's global local-plugin directory and manages the optimizer process for
+the OpenCode session. The GitHub Release also carries
+`kendr-optimizer-opencode-0.1.2.tgz` for managed package deployment. No npm
+registry publication is required.
 
 ## Options
 

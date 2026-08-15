@@ -23,6 +23,14 @@ credential-free numeric loopback optimizer endpoint, do not receive provider
 credentials, and preserve the original host value on timeout, invalid output,
 or sidecar failure.
 
+For setup commands and provider-boundary guidance, see
+[`cli-provider-integration.md`](cli-provider-integration.md). Provider API keys,
+base URLs, model selection, routing, streaming, and billing records stay in the
+host CLI or gateway; Kendr is not configured as a provider endpoint.
+Public host support installs into prebuilt host CLIs through `kendr-opt setup`
+or the adapter artifacts attached to the GitHub Release. Building a host
+harness from source is only a compatibility-test and adapter-development path.
+
 ## Verification
 
 The TypeScript integration packages build before running their tests:

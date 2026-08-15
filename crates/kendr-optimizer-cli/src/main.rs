@@ -1,6 +1,8 @@
 mod server;
+mod setup;
 
 use std::error::Error;
+use std::ffi::OsString;
 use std::fs;
 use std::io::{self, Read};
 use std::net::SocketAddr;
@@ -71,19 +73,47 @@ enum Command {
         #[arg(long, default_value = "127.0.0.1:7331")]
         bind: SocketAddr,
     },
+    /// Install Kendr's repository-hosted adapter into an existing LLM harness.
+    Setup {
+        #[arg(value_enum)]
+        harness: Option<setup::Harness>,
+        /// List automatic and manual harness support without changing files.
+        #[arg(long)]
+        list: bool,
+        /// Replace a same-name unmanaged adapter or an exclusive OpenClaw slot.
+        #[arg(long)]
+        force: bool,
+    },
+    /// Configure a harness, run the local optimizer, and launch the harness.
+    Run {
+        #[arg(value_enum)]
+        harness: setup::Harness,
+        /// Replace a conflicting adapter installation during setup.
+        #[arg(long)]
+        force: bool,
+        /// Arguments passed to the harness after `--`.
+        #[arg(last = true, allow_hyphen_values = true)]
+        arguments: Vec<OsString>,
+    },
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
-    let cli = Cli::parse();
-    let optimizer = Optimizer::new();
+async fn main() {
+    if let Err(error) = run().await {
+        eprintln!("kendr-opt: {error}");
+        std::process::exit(1);
+    }
+}
 
+async fn run() -> Result<(), Box<dyn Error>> {
+    let cli = Cli::parse();
     match cli.command {
         Command::Analyze {
             input,
             output,
             compact,
         } => {
+            let optimizer = Optimizer::new();
             let request: OptimizeRequest = read_json(&input)?;
             let outcome = optimizer.analyze(&request)?;
             write_json(&output, &outcome, compact)?;
@@ -93,6 +123,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             output,
             compact,
         } => {
+            let optimizer = Optimizer::new();
             let request: OptimizeRequest = read_json(&input)?;
             let outcome = optimizer.optimize(&request)?;
             write_json(&output, &outcome, compact)?;
@@ -102,6 +133,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             output,
             compact,
         } => {
+            let optimizer = Optimizer::new();
             let capsule: RecoveryCapsule = read_json(&input)?;
             let restored = optimizer.restore(&capsule)?;
             write_json(&output, &restored, compact)?;
@@ -111,14 +143,34 @@ async fn main() -> Result<(), Box<dyn Error>> {
             output,
             compact,
         } => {
+            let optimizer = Optimizer::new();
             let observation: UsageObservation = read_json(&input)?;
             let savings = optimizer.observe(observation);
             write_json(&output, &savings, compact)?;
         }
         Command::Engines { output, compact } => {
+            let optimizer = Optimizer::new();
             write_json(&output, &optimizer.engines(), compact)?;
         }
-        Command::Serve { bind } => server::run(bind, optimizer).await?,
+        Command::Serve { bind } => server::run(bind, Optimizer::new()).await?,
+        Command::Setup {
+            harness,
+            list,
+            force,
+        } => {
+            if list {
+                println!("{}", setup::support_text());
+            } else {
+                for message in setup::setup(harness, force)? {
+                    println!("{message}");
+                }
+            }
+        }
+        Command::Run {
+            harness,
+            force,
+            arguments,
+        } => setup::run(harness, &arguments, force)?,
     }
 
     Ok(())

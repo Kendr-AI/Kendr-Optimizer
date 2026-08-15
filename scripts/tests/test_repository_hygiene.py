@@ -34,6 +34,11 @@ class RepositoryHygieneTests(unittest.TestCase):
     def test_allows_only_audited_target_harness_packages(self) -> None:
         self.assertFalse(
             hygiene.path_violations(
+                PurePosixPath(".claude-plugin/marketplace.json")
+            )
+        )
+        self.assertFalse(
+            hygiene.path_violations(
                 PurePosixPath(
                     "integrations/claude-code/.claude-plugin/plugin.json"
                 )

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-KENDR_DEFAULT_VERSION="v0.1.1"
+KENDR_DEFAULT_VERSION="v0.1.2"
 KENDR_REPOSITORY="Kendr-AI/Kendr-Optimizer"
 
 say() {
@@ -86,11 +86,11 @@ download_asset() {
         else
             curl --proto '=https' --tlsv1.2 -LsSf --retry 3 \
                 --connect-timeout 20 "$url" -o "$destination" ||
-                fail "could not download $name; authenticate gh for private releases"
+                fail "could not download public release asset $name"
         fi
     elif command -v wget >/dev/null 2>&1; then
         wget -q -O "$destination" "$url" ||
-            fail "could not download $name; authenticate gh for private releases"
+            fail "could not download public release asset $name"
     else
         fail "curl, wget, or authenticated GitHub CLI is required"
     fi
@@ -168,6 +168,7 @@ if [ ! -f "$destination" ] || [ -L "$destination" ]; then
 fi
 
 say "Installed kendr-opt ${version#v} to $destination"
+say "Next: kendr-opt setup --list"
 case ":${PATH:-}:" in
     *":$install_dir:"*) ;;
     *)

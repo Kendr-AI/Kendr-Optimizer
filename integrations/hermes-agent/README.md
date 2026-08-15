@@ -44,32 +44,17 @@ savings. Use paired provider usage observations for that claim.
 
 ## Install
 
-Start the local transform service first:
+The normal user path is:
 
 ```bash
-cargo run -p kendr-optimizer-cli --release -- serve --bind 127.0.0.1:7331
+kendr-opt run hermes
 ```
 
-Warm the same long-running process before enabling a tight synchronous
-deadline (the first tokenizer initialization can exceed it):
-
-```bash
-curl -fsS -H 'content-type: application/json' \
-  --data-binary @examples/request.json \
-  http://127.0.0.1:7331/v1/analyze >/dev/null
-```
-
-Install this adapter into the same Python environment as Hermes:
-
-```bash
-python -m pip install ./integrations/hermes-agent
-hermes plugins enable kendr-optimizer
-```
-
-Hermes discovers the package through the official `hermes_agent.plugins`
-entry-point group. For a source-directory install instead, copy
-`src/kendr_hermes_plugin/` to `~/.hermes/plugins/kendr-optimizer/`; the included
-`plugin.yaml` and `register(ctx)` entry point support that loader as well.
+`kendr-opt` writes the dependency-free source package to Hermes's user plugin
+directory, enables it with Hermes's own CLI, and manages the optimizer process.
+The GitHub Release also carries
+`kendr_optimizer_hermes-0.1.2-py3-none-any.whl` for managed Python environment
+deployment. No PyPI publication is required.
 
 ## Configuration
 

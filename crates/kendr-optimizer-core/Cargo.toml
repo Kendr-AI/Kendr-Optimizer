@@ -13,7 +13,7 @@ keywords = ["llm", "tokens", "optimization", "prompt", "ai"]
 categories = ["algorithms", "text-processing"]
 
 [dependencies]
-kendr-optimizer-contracts = { version = "0.1.1", path = "../kendr-optimizer-contracts" }
+kendr-optimizer-contracts = { version = "0.1.2", path = "../kendr-optimizer-contracts" }
 once_cell.workspace = true
 regex.workspace = true
 serde_json.workspace = true

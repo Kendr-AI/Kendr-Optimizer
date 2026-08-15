@@ -4,7 +4,7 @@
 
 This roadmap is capability- and evidence-gated, not date-driven. A milestone is complete only when its acceptance criteria are met. Token reduction alone is not sufficient: safety, task quality, measurement honesty, latency, privacy, and integration behavior are release gates.
 
-KendrOptimizer is currently **pre-alpha**. Version `0.1.1` identifies the scaffold; it does not imply API stability or production readiness.
+KendrOptimizer is currently **pre-alpha**. Version `0.1.2` identifies the scaffold; it does not imply API stability or production readiness.
 
 The initial project is intentionally independent of KendrWeb. We will evaluate the optimizer as an open-source engine and integration component before deciding how KendrWeb should consume it. No milestone below assumes that KendrWeb must be modified.
 

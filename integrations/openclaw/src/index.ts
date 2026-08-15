@@ -392,7 +392,7 @@ export default function register(api: OpenClawPluginApi): void {
       info: {
         id: PLUGIN_ID,
         name: "KendrOptimizer",
-        version: "0.1.0",
+        version: "0.1.2",
         ownsCompaction: false,
         acceptedHostParams: [
           "sessionKey",
@@ -514,7 +514,7 @@ function makeRequest(
       output_contract: null,
       metadata: {
         host: "openclaw",
-        adapter_version: "0.1.0",
+        adapter_version: "0.1.2",
       },
     },
     target: {

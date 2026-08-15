@@ -19,32 +19,16 @@ The adapter reports `can_narrow_tools=false`, `can_restore_references=false`, an
 
 ## Install
 
-Start the local transform-only core:
+The normal user path is:
 
 ```powershell
-cargo run -p kendr-optimizer-cli -- serve --bind 127.0.0.1:7331
+kendr-opt run pi
 ```
 
-Install a published package globally:
-
-```powershell
-pi install npm:@kendr/optimizer-pi@0.1.0
-```
-
-Install for one project:
-
-```powershell
-pi install -l npm:@kendr/optimizer-pi@0.1.0
-```
-
-Try a published or local package for one run:
-
-```powershell
-pi -e npm:@kendr/optimizer-pi@0.1.0
-pi -e D:\path\to\KendrOptimizer\integrations\pi-agent
-```
-
-For a source checkout, run `npm ci && npm run build` before a local-path install. The `pi.extensions` package manifest points to `dist/index.js`.
+`kendr-opt` writes the compiled extension to Pi's documented global extension
+directory and manages the optimizer process for the Pi session. The GitHub
+Release also carries `kendr-optimizer-pi-0.1.2.tgz` for managed package
+deployment. No npm registry publication is required.
 
 ## Configuration
 

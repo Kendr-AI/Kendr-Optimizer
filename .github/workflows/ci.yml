@@ -119,6 +119,20 @@ jobs:
         run: |
           npm pack --dry-run --json > "${RUNNER_TEMP}/npm-pack.json"
           node -e "const p=require(process.env.RUNNER_TEMP + '/npm-pack.json')[0]; const f=new Set(p.files.map(x=>x.path)); for (const n of ['LICENSE','NOTICE']) if (!f.has(n)) throw new Error('missing '+n)"
+      - name: Pack GitHub Release adapter
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          mkdir -p "${RUNNER_TEMP}/adapter"
+          npm pack --pack-destination "${RUNNER_TEMP}/adapter"
+      - name: Upload GitHub Release adapter
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: adapter-${{ matrix.adapter }}
+          path: ${{ runner.temp }}/adapter/*.tgz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
 
   hermes-adapter:
     runs-on: ubuntu-latest
@@ -143,6 +157,15 @@ jobs:
         run: |
           python -m pip wheel --no-deps --wheel-dir "${RUNNER_TEMP}/wheels" integrations/hermes-agent
           python -c "import glob,zipfile; p=glob.glob('${{ runner.temp }}/wheels/*.whl')[0]; n=zipfile.ZipFile(p).namelist(); assert any(x.endswith('/licenses/LICENSE') for x in n); assert any(x.endswith('/licenses/NOTICE') for x in n)"
+      - name: Upload GitHub Release adapter
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: adapter-hermes-agent
+          path: ${{ runner.temp }}/wheels/*.whl
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
 
   nanoclaw-adapter:
     runs-on: ubuntu-latest
@@ -297,6 +320,12 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           pattern: cli-*
+          path: dist
+          merge-multiple: true
+      - name: Download adapter packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: adapter-*
           path: dist
           merge-multiple: true
       - name: Assemble and verify release assets

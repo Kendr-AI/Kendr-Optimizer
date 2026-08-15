@@ -35,35 +35,23 @@ plugin entry contract instead of importing internal OpenClaw modules.
 Node must also satisfy OpenClaw's supported runtime range: Node 22.22.3+,
 24.15+, or 25.9+ in the corresponding major-version bands.
 
-## Start the optimizer
+## Install and run
 
-From the KendrOptimizer repository root:
-
-```powershell
-cargo run -p kendr-optimizer-cli -- serve --bind 127.0.0.1:7331
-```
-
-Keep the service bound to loopback. The transform endpoint receives model
-context, which may contain private prompts, tool output, source code, or other
-sensitive data.
-
-## Build and install the plugin
+The normal user path is:
 
 ```powershell
-cd integrations/openclaw
-npm install
-npm test
-openclaw plugins install --link .
-openclaw plugins inspect kendr-optimizer --runtime --json
+kendr-opt run openclaw
 ```
 
-Published installations must include compiled `dist/` output. The
-package metadata already points OpenClaw at `dist/index.js`; it does
-not rely on TypeScript execution at runtime.
+`kendr-opt` writes the compiled package to its data directory, invokes
+OpenClaw's plugin installer, selects the `contextEngine` slot, and manages the
+optimizer process. It refuses to replace another context engine unless
+`--force` is supplied. The GitHub Release also carries
+`kendr-optimizer-openclaw-0.1.2.tgz` for managed package deployment.
 
 ## Configure OpenClaw
 
-Select the adapter in OpenClaw's exclusive context-engine slot:
+Automatic setup produces the equivalent of this exclusive context-engine slot:
 
 ```json5
 {

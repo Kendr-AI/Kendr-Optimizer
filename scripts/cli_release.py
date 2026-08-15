@@ -15,6 +15,7 @@ import stat
 import subprocess
 import tarfile
 import tempfile
+import tomllib
 import zipfile
 from pathlib import Path, PurePosixPath
 
@@ -42,6 +43,39 @@ PACKAGE_DOCUMENTS = {
 }
 VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$")
 CHECKSUM_RE = re.compile(r"^([0-9a-f]{64})  ([A-Za-z0-9_.+-]+)$")
+PROJECT_VERSION = tomllib.loads((ROOT / "Cargo.toml").read_text(encoding="utf-8"))[
+    "workspace"
+]["package"]["version"]
+NODE_ADAPTER_ASSETS = {
+    f"kendr-optimizer-{name}-{PROJECT_VERSION}.tgz"
+    for name in (
+        "claude-channels",
+        "claude-code",
+        "openclaw",
+        "opencode",
+        "pi",
+    )
+}
+HERMES_ADAPTER_ASSET = (
+    f"kendr_optimizer_hermes-{PROJECT_VERSION}-py3-none-any.whl"
+)
+NANOCLAW_SKILL_ROOT = ROOT / "integrations" / "nanoclaw" / "skill"
+
+
+def nanoclaw_asset_name(version: str) -> str:
+    return f"kendr-optimizer-nanoclaw-{version}.tar.gz"
+
+
+def adapter_assets(version: str = PROJECT_VERSION) -> set[str]:
+    node_assets = {
+        name.replace(f"-{PROJECT_VERSION}.tgz", f"-{version}.tgz")
+        for name in NODE_ADAPTER_ASSETS
+    }
+    return {
+        *node_assets,
+        f"kendr_optimizer_hermes-{version}-py3-none-any.whl",
+        nanoclaw_asset_name(version),
+    }
 
 
 def archive_name(target: str) -> str:
@@ -252,16 +286,35 @@ def copy_installers(directory: Path) -> None:
         shutil.copyfile(source, directory / name)
 
 
-def expected_release_assets() -> set[str]:
+def package_nanoclaw(directory: Path, version: str, epoch: int) -> Path:
+    validate_version(version)
+    if epoch < 0:
+        raise ValueError("source epoch cannot be negative")
+    members: dict[str, tuple[Path, int]] = {}
+    for source in sorted(NANOCLAW_SKILL_ROOT.rglob("*")):
+        if source.is_symlink():
+            raise ValueError(f"NanoClaw skill cannot contain a symlink: {source}")
+        if source.is_file():
+            relative = source.relative_to(NANOCLAW_SKILL_ROOT).as_posix()
+            members[relative] = (source, 0o644)
+    if not members:
+        raise ValueError("NanoClaw skill contains no files")
+    output = directory / nanoclaw_asset_name(version)
+    write_tar_gz(output, f"kendr-optimizer-nanoclaw-{version}", members, epoch)
+    return output
+
+
+def expected_release_assets(version: str = PROJECT_VERSION) -> set[str]:
     return {
         *(archive_name(target) for target in SUPPORTED_TARGETS),
         *INSTALLER_ASSETS,
+        *adapter_assets(version),
         "SHA256SUMS",
     }
 
 
-def write_checksums(directory: Path) -> Path:
-    checksummed = sorted(expected_release_assets() - {"SHA256SUMS"})
+def write_checksums(directory: Path, version: str = PROJECT_VERSION) -> Path:
+    checksummed = sorted(expected_release_assets(version) - {"SHA256SUMS"})
     missing = [name for name in checksummed if not (directory / name).is_file()]
     if missing:
         raise FileNotFoundError(f"release assets are missing: {', '.join(missing)}")
@@ -302,7 +355,7 @@ def verify_installer_versions(directory: Path, version: str) -> None:
 
 def verify_directory(directory: Path, version: str) -> None:
     validate_version(version)
-    expected = expected_release_assets()
+    expected = expected_release_assets(version)
     entries = list(directory.iterdir())
     unsafe = [path.name for path in entries if path.is_symlink() or not path.is_file()]
     if unsafe:
@@ -326,7 +379,33 @@ def verify_directory(directory: Path, version: str) -> None:
 
     for target in SUPPORTED_TARGETS:
         verify_archive(directory / archive_name(target), version, target)
+    verify_nanoclaw_archive(directory / nanoclaw_asset_name(version), version)
     verify_installer_versions(directory, version)
+
+
+def verify_nanoclaw_archive(path: Path, version: str) -> None:
+    expected_root = f"kendr-optimizer-nanoclaw-{version}"
+    expected = {
+        f"{expected_root}/{source.relative_to(NANOCLAW_SKILL_ROOT).as_posix()}"
+        for source in NANOCLAW_SKILL_ROOT.rglob("*")
+        if source.is_file()
+    }
+    with tarfile.open(path, "r:gz") as archive:
+        members = archive.getmembers()
+        names = {member.name for member in members}
+        if len(members) != len(expected) or names != expected:
+            raise ValueError(f"unexpected NanoClaw archive members in {path.name}")
+        for member in members:
+            pure_name = PurePosixPath(member.name)
+            if pure_name.is_absolute() or ".." in pure_name.parts or not member.isfile():
+                raise ValueError(f"unsafe NanoClaw archive member: {member.name}")
+            if member.mode != 0o644:
+                raise ValueError(f"unexpected mode for {member.name}: {oct(member.mode)}")
+            extracted = archive.extractfile(member)
+            if extracted is None:
+                raise ValueError(f"cannot read NanoClaw archive member: {member.name}")
+            while extracted.read(1024 * 1024):
+                pass
 
 
 def verify_github_assets(directory: Path, release_json: Path) -> None:
@@ -348,7 +427,7 @@ def verify_github_assets(directory: Path, release_json: Path) -> None:
         if not isinstance(size, int) or size <= 0:
             raise ValueError(f"GitHub release asset is empty: {name}")
         remote[name] = digest
-    expected_names = expected_release_assets()
+    expected_names = expected_release_assets(PROJECT_VERSION)
     if set(remote) != expected_names:
         raise ValueError(
             "GitHub release asset set mismatch; "
@@ -380,6 +459,9 @@ def parse_args() -> argparse.Namespace:
     )
     assemble_parser.add_argument("--directory", type=Path, required=True)
     assemble_parser.add_argument("--version", required=True)
+    assemble_parser.add_argument(
+        "--epoch", type=int, default=int(os.environ.get("SOURCE_DATE_EPOCH", "0"))
+    )
 
     verify_parser = subparsers.add_parser("verify", help="verify a release directory")
     verify_parser.add_argument("--directory", type=Path, required=True)
@@ -408,7 +490,8 @@ def main() -> int:
     elif args.command == "assemble":
         directory = args.directory.resolve()
         copy_installers(directory)
-        write_checksums(directory)
+        package_nanoclaw(directory, args.version, args.epoch)
+        write_checksums(directory, args.version)
         verify_directory(directory, args.version)
         print(directory)
     elif args.command == "verify":

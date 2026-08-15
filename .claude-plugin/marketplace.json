@@ -1,0 +1,17 @@
+{
+  "name": "kendr",
+  "owner": {
+    "name": "Kendr AI"
+  },
+  "metadata": {
+    "description": "Official Kendr integrations"
+  },
+  "plugins": [
+    {
+      "name": "kendr-optimizer",
+      "source": "./integrations/claude-code",
+      "description": "Optimizes supported Claude Code tool results through the local Kendr service",
+      "version": "0.1.2"
+    }
+  ]
+}

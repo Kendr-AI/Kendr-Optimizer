@@ -13,8 +13,8 @@ abstract: >-
 repository-code: https://github.com/Kendr-AI/Kendr-Optimizer
 url: https://github.com/Kendr-AI/Kendr-Optimizer
 license: Apache-2.0
-version: 0.1.1
-date-released: 2026-08-12
+version: 0.1.2
+date-released: 2026-08-15
 keywords:
   - large language models
   - token optimization

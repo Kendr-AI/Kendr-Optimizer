@@ -16,30 +16,28 @@ The adapter was audited against Claude Code `2.1.224` at commit `66edf5358349356
 
 The full machine-readable declaration is in `capabilities.json`.
 
-## Local install
+## Install
 
-Start KendrOptimizer on numeric loopback:
-
-```powershell
-cargo run -p kendr-optimizer-cli -- serve --bind 127.0.0.1:7331
-```
-
-Build this package and start its hook bridge in a second terminal:
+The normal user path is:
 
 ```powershell
-cd integrations/claude-code
-npm ci
-npm run build
-node dist/server.js
+kendr-opt run claude-code
 ```
 
-Load the plugin from its package root:
+The launcher writes this repository-hosted plugin to Kendr's data directory,
+starts the optimizer and hook bridge, and supplies the plugin directory to
+Claude Code. Node.js 22 or newer is currently required for the bridge.
+
+For a persistent marketplace install from the public repository:
 
 ```powershell
-claude --plugin-dir "D:\path\to\KendrOptimizer\integrations\claude-code"
+claude plugin marketplace add Kendr-AI/Kendr-Optimizer
+claude plugin install kendr-optimizer@kendr
 ```
 
-For a published package, `npm install -g @kendr/optimizer-claude-code` exposes the `kendr-claude-code-bridge` executable. The plugin root still needs to be installed through a Claude Code marketplace or supplied with `--plugin-dir`.
+The GitHub Release also carries
+`kendr-optimizer-claude-code-0.1.2.tgz` for managed package deployment. No npm
+registry publication is required.
 
 If an organization configures `allowedHttpHookUrls`, its policy must allow the three exact `http://127.0.0.1:7332/hooks/claude-code/...` URLs in `hooks/hooks.json`.
 

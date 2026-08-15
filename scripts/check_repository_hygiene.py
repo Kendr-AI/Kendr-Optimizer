@@ -5,10 +5,11 @@ In a Git checkout, the tracked-file list is authoritative: ignored local build
 output is not a publication defect, while a tracked cache is. Source archives
 without Git metadata use an ignore-aware filesystem walk instead.
 
-Two assistant-shaped paths are distributable target-harness packages, not
+Three assistant-shaped paths are distributable target-harness packages, not
 instructions for developing this repository. They are deliberately allowlisted
 at their exact locations:
 
+* .claude-plugin/marketplace.json
 * integrations/claude-code/.claude-plugin/plugin.json
 * integrations/nanoclaw/skill/SKILL.md
 """
@@ -66,6 +67,8 @@ CLAUDE_PLUGIN_DIRECTORY = PurePosixPath(
     "integrations/claude-code/.claude-plugin"
 )
 CLAUDE_PLUGIN_MANIFEST = CLAUDE_PLUGIN_DIRECTORY / "plugin.json"
+CLAUDE_MARKETPLACE_DIRECTORY = PurePosixPath(".claude-plugin")
+CLAUDE_MARKETPLACE_MANIFEST = CLAUDE_MARKETPLACE_DIRECTORY / "marketplace.json"
 NANOCLAW_SKILL = PurePosixPath("integrations/nanoclaw/skill/SKILL.md")
 REQUIRED_DISTRIBUTION_FILES = {
     PurePosixPath("THIRD_PARTY_LICENSES.html"),
@@ -225,6 +228,8 @@ def path_violations(path: PurePosixPath) -> list[str]:
 
     if ".claude-plugin" in folded_parts:
         allowed_plugin_paths = {
+            normalize_path(CLAUDE_MARKETPLACE_DIRECTORY),
+            normalize_path(CLAUDE_MARKETPLACE_MANIFEST),
             normalize_path(CLAUDE_PLUGIN_DIRECTORY),
             normalize_path(CLAUDE_PLUGIN_MANIFEST),
         }

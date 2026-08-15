@@ -7,6 +7,24 @@ once its pre-alpha contracts are declared stable.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-15
+
+### Added
+
+- `kendr-opt setup` installs repository-hosted adapters into detected OpenCode,
+  Claude Code, Pi, OpenClaw, and Hermes installations without an npm or PyPI
+  registry publication.
+- `kendr-opt run` starts the local transform service, launches the selected
+  harness, and stops the service when that harness exits.
+- GitHub Releases now carry installable Node adapter tarballs, a Hermes wheel,
+  and the guarded NanoClaw skill archive alongside the native CLI binaries.
+
+### Changed
+
+- The primary installation guide now uses a two-command setup and launch path.
+- The OpenCode release includes a dependency-free, single-export local plugin
+  bundle for global plugin-directory installation.
+
 ## [0.1.1] - 2026-08-12
 
 ### Added

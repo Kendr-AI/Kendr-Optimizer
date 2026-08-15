@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$DefaultVersion = 'v0.1.1'
+$DefaultVersion = 'v0.1.2'
 $Repository = 'Kendr-AI/Kendr-Optimizer'
 
 if ([string]::IsNullOrWhiteSpace($Version)) {
@@ -84,7 +84,7 @@ function Get-ReleaseAsset {
     try {
         Invoke-WebRequest -UseBasicParsing -Uri $Uri -OutFile $Destination
     } catch {
-        throw "Could not download $Name. Authenticate gh for private releases. $($_.Exception.Message)"
+        throw "Could not download public release asset $Name. $($_.Exception.Message)"
     }
 }
 
@@ -236,6 +236,7 @@ try {
     }
 
     Write-Output "Installed kendr-opt $($Version.Substring(1)) to $Destination"
+    Write-Output 'Next: kendr-opt setup --list'
     $Resolved = Get-Command kendr-opt -ErrorAction SilentlyContinue
     if ($Resolved -and (ConvertTo-NormalizedPath $Resolved.Source) -ine (ConvertTo-NormalizedPath $Destination)) {
         Write-Warning "Another kendr-opt at $($Resolved.Source) currently appears earlier on PATH."

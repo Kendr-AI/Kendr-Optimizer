@@ -1,6 +1,6 @@
 {
   "name": "@kendr/optimizer-openclaw",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Fail-open OpenClaw context-engine adapter for the local Kendr Optimizer transform service",
   "license": "Apache-2.0",
   "repository": {
@@ -12,7 +12,9 @@
   "bugs": {
     "url": "https://github.com/Kendr-AI/Kendr-Optimizer/issues"
   },
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -84,6 +84,26 @@ class CliReleaseTests(unittest.TestCase):
         for dependency in ("kendr-optimizer-contracts", "kendr-optimizer-core"):
             self.assertEqual(cli["dependencies"][dependency]["version"], version)
 
+        for adapter in (
+            "claude-channels",
+            "claude-code",
+            "openclaw",
+            "opencode",
+            "pi-agent",
+        ):
+            package = json.loads(
+                (ROOT / "integrations" / adapter / "package.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(package["version"], version)
+        hermes = load_toml(ROOT / "integrations/hermes-agent/pyproject.toml")
+        self.assertEqual(hermes["project"]["version"], version)
+        marketplace = json.loads(
+            (ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(marketplace["plugins"][0]["version"], version)
+
         notices = (ROOT / "THIRD_PARTY_LICENSES.html").read_text(encoding="utf-8")
         for package in sorted(local_packages):
             self.assertIn(f"{package} {version}", notices)
@@ -96,6 +116,7 @@ class CliReleaseTests(unittest.TestCase):
             release.archive_name(target) for target in release.SUPPORTED_TARGETS
         }
         expected_assets.update(release.INSTALLER_ASSETS)
+        expected_assets.update(release.adapter_assets())
         expected_assets.add("SHA256SUMS")
         self.assertEqual(release.expected_release_assets(), expected_assets)
 
@@ -200,6 +221,7 @@ class CliReleaseTests(unittest.TestCase):
 
     def test_checksum_and_remote_digest_parsers_fail_closed(self) -> None:
         digest = "a" * 64
+        version = release.PROJECT_VERSION
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             checksums = root / "SHA256SUMS"
@@ -221,8 +243,11 @@ class CliReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicate checksum entry"):
                 release.read_checksums(checksums)
 
-            for name in release.expected_release_assets():
+            for name in release.expected_release_assets() - {
+                release.nanoclaw_asset_name(version)
+            }:
                 (root / name).write_bytes(f"asset:{name}\n".encode())
+            release.package_nanoclaw(root, version, 0)
             payload = {
                 "assets": [
                     {
@@ -271,7 +296,12 @@ class CliReleaseTests(unittest.TestCase):
             release.verify_archive(output, version, target)
 
         release.copy_installers(directory)
-        release.write_checksums(directory)
+        for name in release.adapter_assets(version) - {
+            release.nanoclaw_asset_name(version)
+        }:
+            (directory / name).write_bytes(f"asset:{name}\n".encode())
+        release.package_nanoclaw(directory, version, epoch)
+        release.write_checksums(directory, version)
 
 
 if __name__ == "__main__":
