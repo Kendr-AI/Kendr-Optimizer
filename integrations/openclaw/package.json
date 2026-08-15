@@ -1,6 +1,6 @@
 {
   "name": "@kendr/optimizer-openclaw",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Fail-open OpenClaw context-engine adapter for the local Kendr Optimizer transform service",
   "license": "Apache-2.0",
   "repository": {

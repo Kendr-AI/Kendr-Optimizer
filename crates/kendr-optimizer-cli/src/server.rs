@@ -1,3 +1,4 @@
+use std::io;
 use std::net::SocketAddr;
 use std::sync::Arc;
 
@@ -23,6 +24,8 @@ pub(crate) async fn run(
         .with_env_filter(
             EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
         )
+        .with_writer(io::stderr)
+        .with_ansi(crate::ui::stderr_color_enabled())
         .try_init();
 
     let app = Router::new()

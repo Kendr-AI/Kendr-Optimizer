@@ -33,6 +33,12 @@ INSTALLER_ASSETS = {
     "kendr-opt-installer.ps1": ROOT / "install" / "kendr-opt-installer.ps1",
     "kendr-opt-installer.sh": ROOT / "install" / "kendr-opt-installer.sh",
 }
+WHITEPAPER_ASSET_NAME = (
+    "kendr-optimizer-verification-gated-token-reduction-whitepaper.pdf"
+)
+PUBLICATION_ASSETS = {
+    WHITEPAPER_ASSET_NAME: ROOT / "output" / "pdf" / WHITEPAPER_ASSET_NAME,
+}
 PACKAGE_DOCUMENTS = {
     "CHANGELOG.md": ROOT / "CHANGELOG.md",
     "LICENSE": ROOT / "LICENSE",
@@ -286,6 +292,13 @@ def copy_installers(directory: Path) -> None:
         shutil.copyfile(source, directory / name)
 
 
+def copy_publication_assets(directory: Path) -> None:
+    for name, source in PUBLICATION_ASSETS.items():
+        if not source.is_file():
+            raise FileNotFoundError(f"required publication asset is missing: {source}")
+        shutil.copyfile(source, directory / name)
+
+
 def package_nanoclaw(directory: Path, version: str, epoch: int) -> Path:
     validate_version(version)
     if epoch < 0:
@@ -308,6 +321,7 @@ def expected_release_assets(version: str = PROJECT_VERSION) -> set[str]:
     return {
         *(archive_name(target) for target in SUPPORTED_TARGETS),
         *INSTALLER_ASSETS,
+        *PUBLICATION_ASSETS,
         *adapter_assets(version),
         "SHA256SUMS",
     }
@@ -490,6 +504,7 @@ def main() -> int:
     elif args.command == "assemble":
         directory = args.directory.resolve()
         copy_installers(directory)
+        copy_publication_assets(directory)
         package_nanoclaw(directory, args.version, args.epoch)
         write_checksums(directory, args.version)
         verify_directory(directory, args.version)

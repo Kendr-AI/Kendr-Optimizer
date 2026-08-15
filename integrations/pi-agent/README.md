@@ -27,7 +27,7 @@ kendr-opt run pi
 
 `kendr-opt` writes the compiled extension to Pi's documented global extension
 directory and manages the optimizer process for the Pi session. The GitHub
-Release also carries `kendr-optimizer-pi-0.1.3.tgz` for managed package
+Release also carries `kendr-optimizer-pi-0.1.4.tgz` for managed package
 deployment. No npm registry publication is required.
 
 ## Configuration

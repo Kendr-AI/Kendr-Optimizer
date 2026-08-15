@@ -1,6 +1,6 @@
 {
   "name": "@kendr/optimizer-pi",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Provider-neutral Pi extension for the Kendr transform-only optimizer",
   "type": "module",
   "license": "Apache-2.0",

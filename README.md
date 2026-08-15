@@ -20,12 +20,13 @@ LLM agent workloads. It reduces redundant prompt, context, and tool-output
 payloads locally, then hands control back to the host that already owns the
 model, credentials, routing, streaming, retries, and billing.
 
-**Status:** pre-alpha (`0.1.3`) · **Core:** Rust · **License:** Apache-2.0
+**Status:** pre-alpha (`0.1.4`) · **Core:** Rust · **License:** Apache-2.0
 
 [Install](#install-in-two-commands) · [Watch the demo](#60-second-claude-code-demo) ·
 [Inspect every benchmark row](#complete-preservation-gated-ranking) ·
 [See every Kendr case](#kendr-case-by-case) ·
-[Read the complete whitepaper](docs/whitepaper.md)
+[Download the whitepaper PDF](https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-optimizer-verification-gated-token-reduction-whitepaper.pdf) ·
+[Read the Markdown source](docs/whitepaper.md) · [CLI reference](docs/cli-reference.md)
 
 > [!NOTE]
 > **Kendr.org deployment:** the optimizer is already configured for the
@@ -62,13 +63,13 @@ this was not a third-party audit.
 [Inspect the full peer report](releases/v0.1.0-benchmark.5/report.md) ·
 [Open the immutable evidence bundle](releases/v0.1.0-benchmark.5/README.md)
 
-The frozen bundle identifies the measured Kendr build as `0.1.0-dev`; `0.1.3`
+The frozen bundle identifies the measured Kendr build as `0.1.0-dev`; `0.1.4`
 is the current installable distribution. These figures are not relabeled as a
-fresh `0.1.3` benchmark.
+fresh `0.1.4` benchmark.
 
 ## Install in two commands
 
-Install the native CLI from the public `v0.1.3` GitHub Release. You do not need
+Install the native CLI from the public `v0.1.4` GitHub Release. You do not need
 a Rust toolchain, source checkout, npm publication, PyPI publication, or a
 Kendr-specific provider key; your harness keeps its existing authentication.
 
@@ -76,13 +77,13 @@ macOS or Linux:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.sh | sh
+  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-opt-installer.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.ps1 | iex
+irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-opt-installer.ps1 | iex
 ```
 
 Then launch a supported LLM CLI through Kendr:
@@ -106,10 +107,20 @@ kendr-opt setup --list
 kendr-opt setup
 ```
 
+Running `kendr-opt` with no subcommand opens a read-only terminal dashboard
+when stdin and stdout are interactive terminals. `kendr-opt dashboard` and its
+visible alias `kendr-opt tui` open the same view explicitly. It uses Kendr
+saffron accents when supported, keeps status understandable without color, and
+honors `NO_COLOR`. See the
+[complete CLI command reference](docs/cli-reference.md) for commands, keys,
+machine-output guarantees, environment variables, and examples.
+
 Prefer to inspect before installing? Open the
-[`v0.1.3` release](https://github.com/Kendr-AI/Kendr-Optimizer/releases/tag/v0.1.3)
+[`v0.1.4` release](https://github.com/Kendr-AI/Kendr-Optimizer/releases/tag/v0.1.4)
 for native archives, SHA-256 checksums, adapter packages, license notices, and
-release notes.
+release notes. The release also carries the
+[downloadable technical whitepaper PDF](https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-optimizer-verification-gated-token-reduction-whitepaper.pdf),
+covered by the release checksum manifest.
 
 ### Keep Kendr current
 
@@ -198,6 +209,7 @@ kendr-opt run claude-code -- --resume
 ```
 
 [Read the complete integration guide](docs/cli-provider-integration.md) ·
+[Open the CLI command reference](docs/cli-reference.md) ·
 [Check audited compatibility pins](docs/harness-compatibility.md)
 
 ## How Kendr works
@@ -333,14 +345,17 @@ project's evidence and review expectations.
 
 ## Read the complete work
 
-- **[Technical whitepaper](docs/whitepaper.md):** the authoritative method,
+- **[Technical whitepaper source](docs/whitepaper.md):** the authoritative method,
   contracts, safety model, ranking rules, results, and claim boundaries.
-- **[Whitepaper PDF](output/pdf/kendr-optimizer-verification-gated-token-reduction-whitepaper.pdf):**
-  the publication-formatted copy bound to the Markdown source digest.
+- **[Download the whitepaper PDF](https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-optimizer-verification-gated-token-reduction-whitepaper.pdf):**
+  the publication-formatted release asset, bound to the Markdown source digest
+  and covered by `SHA256SUMS` plus GitHub's recorded SHA-256 digest.
 - **[Benchmark evidence](releases/v0.1.0-benchmark.5/README.md):** raw runs, logs,
   environment, checksums, corpus, and reproduction bundle.
 - **[Integration guide](docs/cli-provider-integration.md):** installation,
   adapter behavior, provider ownership, and manual package deployment.
+- **[CLI command reference](docs/cli-reference.md):** every command, option,
+  terminal behavior, environment variable, and automation boundary.
 - **[Evidence-gated roadmap](docs/roadmap.md):** planned work beyond local token
   reduction.
 
@@ -358,7 +373,7 @@ project's evidence and review expectations.
 </details>
 
 The whitepaper describes the core `0.1.0` method and
-`v0.1.0-benchmark.5` evidence. The installable CLI is currently `0.1.3`.
+`v0.1.0-benchmark.5` evidence. The installable CLI is currently `0.1.4`.
 
 ## Project status
 

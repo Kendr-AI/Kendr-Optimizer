@@ -17,15 +17,15 @@ Kendr. It does not implement `/chat/completions`, `/responses`, or `/messages`.
 
 ## Two-command path
 
-Install from the public `v0.1.3` GitHub Release:
+Install from the public `v0.1.4` GitHub Release:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -LsSf \
-  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.sh | sh
+  https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-opt-installer.sh | sh
 ```
 
 ```powershell
-irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-opt-installer.ps1 | iex
+irm https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-opt-installer.ps1 | iex
 ```
 
 Launch a supported, already-installed harness:
@@ -327,23 +327,23 @@ PyPI publication is required.
 
 | Asset | Use |
 | --- | --- |
-| `kendr-optimizer-opencode-0.1.3.tgz` | Manual OpenCode package deployment |
-| `kendr-optimizer-claude-code-0.1.3.tgz` | Manual Claude Code plugin/bridge deployment |
-| `kendr-optimizer-claude-channels-0.1.3.tgz` | Channel-server library deployment |
-| `kendr-optimizer-pi-0.1.3.tgz` | Manual Pi package deployment |
-| `kendr-optimizer-openclaw-0.1.3.tgz` | Manual OpenClaw package deployment |
-| `kendr_optimizer_hermes-0.1.3-py3-none-any.whl` | Manual Hermes environment deployment |
-| `kendr-optimizer-nanoclaw-0.1.3.tar.gz` | Guarded NanoClaw customization skill |
+| `kendr-optimizer-opencode-0.1.4.tgz` | Manual OpenCode package deployment |
+| `kendr-optimizer-claude-code-0.1.4.tgz` | Manual Claude Code plugin/bridge deployment |
+| `kendr-optimizer-claude-channels-0.1.4.tgz` | Channel-server library deployment |
+| `kendr-optimizer-pi-0.1.4.tgz` | Manual Pi package deployment |
+| `kendr-optimizer-openclaw-0.1.4.tgz` | Manual OpenClaw package deployment |
+| `kendr_optimizer_hermes-0.1.4-py3-none-any.whl` | Manual Hermes environment deployment |
+| `kendr-optimizer-nanoclaw-0.1.4.tar.gz` | Guarded NanoClaw customization skill |
 
 Package managers can install a release URL directly when a managed deployment
 needs that form. For example:
 
 ```bash
-npm install -g https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-optimizer-claude-code-0.1.3.tgz
+npm install -g https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr-optimizer-claude-code-0.1.4.tgz
 ```
 
 ```bash
-python -m pip install https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr_optimizer_hermes-0.1.3-py3-none-any.whl
+python -m pip install https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.4/kendr_optimizer_hermes-0.1.4-py3-none-any.whl
 ```
 
 ## Adding another CLI

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-KENDR_DEFAULT_VERSION="v0.1.3"
+KENDR_DEFAULT_VERSION="v0.1.4"
 KENDR_REPOSITORY="Kendr-AI/Kendr-Optimizer"
 
 say() {
