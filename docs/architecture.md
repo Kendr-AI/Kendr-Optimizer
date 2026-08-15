@@ -54,7 +54,8 @@ The current Rust workspace contains three crates:
 
 - `kendr-optimizer-contracts`: serializable `kendr.optimize/v1` request and `kendr.receipt/v1` receipt types.
 - `kendr-optimizer-core`: normalization-aware token measurement, nine native engines, sequential policy evaluation, verification, recovery, and usage comparison.
-- `kendr-optimizer-cli`: file/stdin commands plus an optional transform-only HTTP service.
+- `kendr-optimizer-cli`: file/stdin commands, an optional transform-only HTTP
+  service, harness setup/launch support, and a GitHub Release self-updater.
 
 The OpenClaw integration is a TypeScript context-engine adapter. It invokes the local service over a strictly validated loopback origin, validates the returned shape, and falls back to original messages on error.
 
@@ -282,6 +283,29 @@ POST /v1/observe
 
 It has no provider routes or egress implementation. It defaults to loopback, but the CLI currently permits other bind addresses. There is no authentication, explicit body limit, concurrency limit, or tenant isolation. Production use should remain on loopback behind operating-system protections until those gaps are closed. An in-process SDK or local IPC transport is preferred for high-trust integrations.
 
+## CLI release updates
+
+The self-updater is an explicit CLI distribution boundary, not part of the
+optimization core or local service. It contacts the compiled public GitHub
+repository only for repository identity, release metadata, and release assets;
+it never forwards inference content or provider configuration. Passive checks
+run only before interactive `setup` and `run` commands and never download an
+asset.
+
+Official installers place a versioned receipt beside the executable. A normal
+update requires that receipt to match the running version and platform target;
+`--force` is limited to explicitly authorizing an unreceipted standalone
+binary. Candidate selection and installation require a published immutable
+release, GitHub and `SHA256SUMS` digest agreement, exact archive structure,
+bounded candidate smoke tests, and unchanged release metadata. Replacement
+keeps a local backup until the installed executable passes validation and its
+new receipt is written.
+
+This is integrity enforcement inside the GitHub release trust boundary. It is
+not independent publisher authentication, reproducible-build proof, or an
+operating-system code signature. The detailed controls and residual risks are
+documented in [the threat model](threat-model.md#supply-chain-and-extensions).
+
 ## OpenClaw adapter
 
 ### Implemented
@@ -337,6 +361,6 @@ Security policy enforcement is not the optimizer's job. The optimizer may remove
 
 ## Maturity warning
 
-Version `0.1.2` is a repository package version, not a production-readiness declaration. The project currently demonstrates the contracts, conservative native transformations, gates, receipts, local service, a detailed OpenClaw sidecar adapter, and additional audited harness mappings. It has not yet established broad model non-inferiority, production resource isolation, secure recovery storage, stable external APIs, or comprehensive provider accounting.
+Version `0.1.3` is a repository package version, not a production-readiness declaration. The project currently demonstrates the contracts, conservative native transformations, gates, receipts, local service, a detailed OpenClaw sidecar adapter, and additional audited harness mappings. It has not yet established broad model non-inferiority, production resource isolation, secure recovery storage, stable external APIs, or comprehensive provider accounting.
 
 Use shadow mode first. Treat applied pre-alpha transformations as experiments until workload-specific evaluation supports them.

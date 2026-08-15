@@ -1,5 +1,6 @@
 mod server;
 mod setup;
+mod update;
 
 use std::error::Error;
 use std::ffi::OsString;
@@ -95,6 +96,24 @@ enum Command {
         #[arg(last = true, allow_hyphen_values = true)]
         arguments: Vec<OsString>,
     },
+    /// Check for or install a newer verified GitHub release.
+    Update {
+        /// Check for an update without downloading or replacing the executable.
+        #[arg(long)]
+        check: bool,
+        /// Emit a versioned machine-readable result.
+        #[arg(long)]
+        json: bool,
+        /// Release channel to follow.
+        #[arg(long, value_enum)]
+        channel: Option<update::Channel>,
+        /// Allow updating an executable without an official install receipt.
+        #[arg(long)]
+        force: bool,
+        /// Reinstall the same eligible version after full verification.
+        #[arg(long)]
+        reinstall: bool,
+    },
 }
 
 #[tokio::main]
@@ -107,6 +126,12 @@ async fn main() {
 
 async fn run() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
+    if matches!(
+        &cli.command,
+        Command::Setup { list: false, .. } | Command::Run { .. }
+    ) {
+        update::maybe_print_update_notice().await;
+    }
     match cli.command {
         Command::Analyze {
             input,
@@ -171,6 +196,13 @@ async fn run() -> Result<(), Box<dyn Error>> {
             force,
             arguments,
         } => setup::run(harness, &arguments, force)?,
+        Command::Update {
+            check,
+            json,
+            channel,
+            force,
+            reinstall,
+        } => update::execute(check, json, channel, force, reinstall).await?,
     }
 
     Ok(())

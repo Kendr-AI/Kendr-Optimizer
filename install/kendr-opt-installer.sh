@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-KENDR_DEFAULT_VERSION="v0.1.2"
+KENDR_DEFAULT_VERSION="v0.1.3"
 KENDR_REPOSITORY="Kendr-AI/Kendr-Optimizer"
 
 say() {
@@ -15,7 +15,7 @@ fail() {
 
 version=${KENDR_VERSION:-$KENDR_DEFAULT_VERSION}
 if ! printf '%s\n' "$version" |
-    grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$'; then
+    grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z][0-9A-Za-z-]*(\.[0-9A-Za-z][0-9A-Za-z-]*)*)?$'; then
     fail "invalid release version: $version"
 fi
 
@@ -42,13 +42,31 @@ install_dir=${KENDR_INSTALL_DIR:-"$HOME/.local/bin"}
 
 temp_root=$(mktemp -d "${TMPDIR:-/tmp}/kendr-opt.XXXXXX") || fail "cannot create a temporary directory"
 staged_path=""
+staged_receipt=""
+binary_backup=""
 cleanup() {
     if [ -n "$staged_path" ]; then
         rm -f "$staged_path"
     fi
+    if [ -n "$staged_receipt" ]; then
+        rm -f "$staged_receipt"
+    fi
+    if [ -n "$binary_backup" ]; then
+        rm -f "$binary_backup"
+    fi
     rm -rf "$temp_root"
 }
 trap cleanup EXIT HUP INT TERM
+
+installer_test_download=0
+if [ -n "${KENDR_DOWNLOAD_BASE_URL:-}" ]; then
+    [ "${KENDR_INSTALLER_TEST_MODE:-}" = "1" ] &&
+        [ "${KENDR_ALLOW_INSECURE:-}" = "1" ] &&
+        printf '%s\n' "$KENDR_DOWNLOAD_BASE_URL" |
+            grep -Eq '^http://127\.0\.0\.1:[0-9]+/?$' ||
+        fail "KENDR_DOWNLOAD_BASE_URL is restricted to numeric loopback installer tests"
+    installer_test_download=1
+fi
 
 download_with_gh=0
 if [ -z "${KENDR_DOWNLOAD_BASE_URL:-}" ] && command -v gh >/dev/null 2>&1; then
@@ -62,25 +80,21 @@ download_asset() {
     destination=$2
     if [ "$download_with_gh" -eq 1 ]; then
         gh release download "$version" \
-            --repo "$KENDR_REPOSITORY" \
+            --repo "github.com/$KENDR_REPOSITORY" \
             --pattern "$name" \
             --output "$destination" >/dev/null ||
             fail "could not download $name with authenticated GitHub CLI"
         return
     fi
 
-    base_url=${KENDR_DOWNLOAD_BASE_URL:-"https://github.com/$KENDR_REPOSITORY/releases/download/$version"}
-    case "$base_url" in
-        https://*) ;;
-        http://*)
-            [ "${KENDR_ALLOW_INSECURE:-}" = "1" ] ||
-                fail "non-HTTPS download URL requires KENDR_ALLOW_INSECURE=1"
-            ;;
-        *) fail "download URL must use HTTPS" ;;
-    esac
+    if [ "$installer_test_download" -eq 1 ]; then
+        base_url=$KENDR_DOWNLOAD_BASE_URL
+    else
+        base_url="https://github.com/$KENDR_REPOSITORY/releases/download/$version"
+    fi
     url="${base_url%/}/$name"
     if command -v curl >/dev/null 2>&1; then
-        if [ "${KENDR_ALLOW_INSECURE:-}" = "1" ]; then
+        if [ "$installer_test_download" -eq 1 ]; then
             curl -LsSf --retry 3 --connect-timeout 20 "$url" -o "$destination" ||
                 fail "could not download $name"
         else
@@ -89,8 +103,12 @@ download_asset() {
                 fail "could not download public release asset $name"
         fi
     elif command -v wget >/dev/null 2>&1; then
-        wget -q -O "$destination" "$url" ||
-            fail "could not download public release asset $name"
+        if [ "$installer_test_download" -eq 1 ]; then
+            wget -q -O "$destination" "$url" || fail "could not download $name"
+        else
+            wget --https-only --secure-protocol=TLSv1_2 -q -O "$destination" "$url" ||
+                fail "could not download public release asset $name"
+        fi
     else
         fail "curl, wget, or authenticated GitHub CLI is required"
     fi
@@ -154,17 +172,62 @@ actual_version=$("$candidate" --version 2>/dev/null || true)
 
 mkdir -p "$install_dir" || fail "cannot create install directory: $install_dir"
 destination="$install_dir/kendr-opt"
-if [ -e "$destination" ] && { [ ! -f "$destination" ] || [ -L "$destination" ]; }; then
+receipt="$install_dir/.kendr-opt-install.json"
+if [ -L "$destination" ] || { [ -e "$destination" ] && [ ! -f "$destination" ]; }; then
     fail "existing destination is not a regular file: $destination"
+fi
+if [ -L "$receipt" ] || { [ -e "$receipt" ] && [ ! -f "$receipt" ]; }; then
+    fail "existing install receipt is not a regular file: $receipt"
 fi
 staged_path=$(mktemp "$install_dir/.kendr-opt.XXXXXX") ||
     fail "cannot create a staging file in $install_dir"
 cp "$candidate" "$staged_path" || fail "cannot stage kendr-opt in $install_dir"
 chmod 0755 "$staged_path"
+
+staged_receipt=$(mktemp "$install_dir/.kendr-opt-install.XXXXXX") ||
+    fail "cannot create an install receipt staging file in $install_dir"
+printf '{"schema_version":"kendr.install/v1","repository":"%s","install_method":"github-release","target":"%s","version":"%s","channel":"preview"}\n' \
+    "$KENDR_REPOSITORY" "$target" "${version#v}" > "$staged_receipt" ||
+    fail "cannot stage the install receipt in $install_dir"
+chmod 0644 "$staged_receipt"
+
+destination_existed=0
+if [ -e "$destination" ]; then
+    destination_existed=1
+    binary_backup=$(mktemp "$install_dir/.kendr-opt.backup.XXXXXX") ||
+        fail "cannot create a rollback file in $install_dir"
+    cp -p "$destination" "$binary_backup" ||
+        fail "cannot preserve the existing kendr-opt for rollback"
+fi
+
 mv -f "$staged_path" "$destination" || fail "cannot install kendr-opt in $install_dir"
 staged_path=""
+if ! mv -f "$staged_receipt" "$receipt"; then
+    rollback_failed=0
+    if [ "$destination_existed" -eq 1 ]; then
+        if mv -f "$binary_backup" "$destination"; then
+            binary_backup=""
+        else
+            rollback_failed=1
+        fi
+    elif ! rm -f "$destination"; then
+        rollback_failed=1
+    fi
+    if [ "$rollback_failed" -eq 1 ]; then
+        fail "cannot install the receipt and could not restore the previous kendr-opt"
+    fi
+    fail "cannot install the receipt; the binary installation was rolled back"
+fi
+staged_receipt=""
+if [ -n "$binary_backup" ]; then
+    rm -f "$binary_backup"
+    binary_backup=""
+fi
 if [ ! -f "$destination" ] || [ -L "$destination" ]; then
     fail "installed destination is not a regular file: $destination"
+fi
+if [ ! -f "$receipt" ] || [ -L "$receipt" ]; then
+    fail "installed receipt is not a regular file: $receipt"
 fi
 
 say "Installed kendr-opt ${version#v} to $destination"

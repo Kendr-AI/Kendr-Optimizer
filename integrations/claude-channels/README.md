@@ -24,7 +24,7 @@ Install the package directly from the GitHub Release, then start the local
 optimizer:
 
 ```powershell
-npm install https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.2/kendr-optimizer-claude-channels-0.1.2.tgz
+npm install https://github.com/Kendr-AI/Kendr-Optimizer/releases/download/v0.1.3/kendr-optimizer-claude-channels-0.1.3.tgz
 kendr-opt serve --bind 127.0.0.1:7331
 ```
 

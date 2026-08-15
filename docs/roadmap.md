@@ -4,7 +4,7 @@
 
 This roadmap is capability- and evidence-gated, not date-driven. A milestone is complete only when its acceptance criteria are met. Token reduction alone is not sufficient: safety, task quality, measurement honesty, latency, privacy, and integration behavior are release gates.
 
-KendrOptimizer is currently **pre-alpha**. Version `0.1.2` identifies the scaffold; it does not imply API stability or production readiness.
+KendrOptimizer is currently **pre-alpha**. Version `0.1.3` identifies the scaffold; it does not imply API stability or production readiness.
 
 The initial project is intentionally independent of KendrWeb. We will evaluate the optimizer as an open-source engine and integration component before deciding how KendrWeb should consume it. No milestone below assumes that KendrWeb must be modified.
 
@@ -34,7 +34,9 @@ Current capabilities:
 - Whole-envelope recovery capsule and digest-checked restoration.
 - Usage comparison with optional paired baseline.
 - Opt-in pre-call generation recommendations with detailed/structured-intent bypass, host-capability checks, instruction-overhead accounting, and expected net-gain gates.
-- CLI operations for analyze, optimize, restore, observe, engine listing, and a local transform-only service.
+- CLI operations for analyze, optimize, restore, observe, engine listing, a
+  local transform-only service, supported-harness setup/launch, and guarded
+  GitHub Release self-update with passive interactive notices.
 - OpenClaw context-engine adapter with strict loopback destination validation, representation-safe ceiling, structural round-trip checks, timeout, circuit breaker, and fail-open behavior.
 - Unit/integration tests covering representative no-op, JSON, cache, recovery, tool selection, generation policy, usage comparison, OpenClaw adapter behavior, typed marker expansion, pytest folding, and exact prefix-block/paragraph/line/sentence repetition.
 

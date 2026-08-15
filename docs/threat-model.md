@@ -57,6 +57,9 @@ Host-controlled inference path
 Optional local service boundary:
 Host process --loopback/local transport--> kendr-opt serve
 
+Optional CLI update boundary:
+kendr-opt update --release metadata and assets only--> GitHub Releases
+
 Future extension boundary:
 Core --bounded scoped data--> sandboxed WASI engine
 ```
@@ -78,13 +81,37 @@ The model provider is outside KendrOptimizer's architecture. Provider credential
 
 ## Current controls and gaps
 
-### No provider egress
+### No provider or content egress
 
-**Implemented:** The core crate has no networking dependency. The CLI service implements inbound transform endpoints only and contains no upstream/provider configuration. The OpenClaw adapter constructs one credential-free request to `/v1/optimize` on a validated loopback origin, rejects redirects, and omits credentials.
+**Implemented:** The core crate has no networking dependency. The CLI service
+implements inbound transform endpoints only and contains no upstream/provider
+configuration. The OpenClaw adapter constructs one credential-free request to
+`/v1/optimize` on a validated loopback origin, rejects redirects, and omits
+credentials.
 
-**Gaps:** Architectural intent is not yet enforced by a dependency-policy test or runtime egress sandbox. The CLI permits an operator to bind the inbound service to a non-loopback address. Future dependencies could accidentally introduce network capability without an automated prohibition.
+The CLI updater is a narrow, separate exception for release distribution. In
+production it is compiled for the public `Kendr-AI/Kendr-Optimizer` repository
+and requests only repository identity, release metadata, and selected release
+assets from GitHub's API and HTTPS asset-delivery path. It never includes an
+envelope, prompt, tool result, recovery capsule, provider credential, provider
+URL, or model setting, and it does not contact Kendr.org. Passive checks run
+only before interactive setup or run commands, cache successful checks for 24
+hours, and can be disabled with `KENDR_NO_UPDATE_CHECK=1`.
 
-**Required:** CI must reject provider SDKs/outbound HTTP clients in core crates, exercise route allowlists, and scan adapters for authorization/upstream options. Distribution guidance should prefer an embedded SDK, stdio, Unix socket/named pipe, or enforced loopback binding.
+**Gaps:** An update request discloses the operator's IP address, request timing,
+and CLI version in its user agent to GitHub and its asset delivery network.
+Official release binaries have no update-authority override; a separately
+compiled CI test feature accepts only an explicitly enabled numeric-loopback
+fixture. The CLI
+permits an operator to bind the inbound transform service to a non-loopback
+address. Architectural intent is not yet enforced by a complete automated
+dependency-policy test or runtime egress sandbox.
+
+**Required:** CI must reject provider SDKs and outbound HTTP clients in core
+crates, prove that adapters and transform routes cannot relay provider traffic,
+and constrain updater tests to repository metadata and release assets without
+sensitive headers or bodies. Distribution guidance should prefer an embedded
+SDK, stdio, Unix socket/named pipe, or enforced loopback binding.
 
 ### Prompt injection and inert data
 
@@ -136,11 +163,28 @@ The model provider is outside KendrOptimizer's architecture. Provider credential
 
 ### Supply chain and extensions
 
-**Implemented:** Production engines are native repository code rather than runtime wrappers around external optimizers. Workspace dependencies are pinned in `Cargo.lock` for this checkout.
+**Implemented:** Production engines are native repository code rather than
+runtime wrappers around external optimizers. Workspace dependencies are pinned
+in `Cargo.lock` for this checkout. The updater requires a published GitHub
+Release reported as immutable, validates GitHub's SHA-256 asset digests against
+the release `SHA256SUMS`, requires exact archive membership, smoke-tests the
+candidate binary, and rechecks release metadata before replacement.
 
-**Gaps:** There is no extension sandbox, signed plugin registry, release signing policy, SBOM gate, dependency audit gate, or stable engine ABI. A future in-process dynamic plugin could access all memory and process privileges.
+**Gaps:** GitHub's digest and `SHA256SUMS` are integrity evidence within the same
+GitHub release trust boundary; they are not a maintainer signature. Immutability
+prevents later mutation but cannot make a malicious or compromised initial
+upload trustworthy. Native binaries are not yet protected by Sigstore or OS
+code signing. The updater's backup-backed rollback handles detected failures,
+but replacement is not journaled or guaranteed crash-consistent across power
+loss. There is no extension sandbox, signed plugin registry, release
+signing policy, SBOM gate, dependency audit gate, or stable engine ABI. A future
+in-process dynamic plugin could access all memory and process privileges.
 
-**Required:** External engines should be WASI components with no network by default and bounded scoped input. Releases need provenance, signatures, SBOMs, dependency review, reproducible-build direction, and engine package allowlists. Do not define an unsafe native dynamic-library ABI as the public extension surface.
+**Required:** Releases need independent provenance and maintainer signatures in
+addition to checksums, plus OS code signing where practical, SBOMs, dependency
+review, and reproducible-build direction. External engines should be WASI
+components with no network by default and bounded scoped input. Do not define an
+unsafe native dynamic-library ABI as the public extension surface.
 
 ### Learned engines
 
@@ -237,7 +281,8 @@ Before a stable release, CI should include:
 - adversarial prompt/tool-result fixtures;
 - cross-tenant recovery isolation tests;
 - request-size, nesting, timeout, memory, and concurrency tests;
-- route and dependency tests proving no provider relay or egress;
+- route and dependency tests proving no provider relay or content egress, with
+  updater network access restricted to repository metadata and release assets;
 - secret-shaped fixtures proving no content appears in logs/receipts by default;
 - malicious extension sandbox tests;
 - cache-churn and repeated-failure tests;

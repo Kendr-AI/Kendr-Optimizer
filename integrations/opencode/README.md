@@ -28,7 +28,7 @@ kendr-opt run opencode
 `kendr-opt` installs the dependency-free `dist/kendr-optimizer.js` bundle in
 OpenCode's global local-plugin directory and manages the optimizer process for
 the OpenCode session. The GitHub Release also carries
-`kendr-optimizer-opencode-0.1.2.tgz` for managed package deployment. No npm
+`kendr-optimizer-opencode-0.1.3.tgz` for managed package deployment. No npm
 registry publication is required.
 
 ## Options

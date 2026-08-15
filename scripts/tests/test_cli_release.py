@@ -17,6 +17,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import cli_release as release  # noqa: E402
+import smoke_installer  # noqa: E402
 
 
 def load_toml(path: Path) -> dict:
@@ -129,6 +130,60 @@ class CliReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unsupported release target"):
             release.archive_name("unsupported-target")
 
+    def test_outbound_http_dependency_is_confined_to_the_cli_updater(self) -> None:
+        contracts = load_toml(ROOT / "crates/kendr-optimizer-contracts/Cargo.toml")
+        core = load_toml(ROOT / "crates/kendr-optimizer-core/Cargo.toml")
+        cli = load_toml(ROOT / "crates/kendr-optimizer-cli/Cargo.toml")
+        self.assertNotIn("reqwest", contracts.get("dependencies", {}))
+        self.assertNotIn("reqwest", core.get("dependencies", {}))
+        self.assertIn("reqwest", cli["dependencies"])
+
+        for crate in ("kendr-optimizer-contracts", "kendr-optimizer-core"):
+            for source in (ROOT / "crates" / crate / "src").glob("**/*.rs"):
+                self.assertNotIn(
+                    "reqwest",
+                    source.read_text(encoding="utf-8"),
+                    f"outbound HTTP client leaked into {source}",
+                )
+
+    def test_official_install_receipt_contract_is_verified(self) -> None:
+        target = "x86_64-pc-windows-msvc"
+        version = release.PROJECT_VERSION
+        expected = {
+            "schema_version": "kendr.install/v1",
+            "repository": "Kendr-AI/Kendr-Optimizer",
+            "install_method": "github-release",
+            "target": target,
+            "version": version,
+            "channel": "preview",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = Path(directory) / smoke_installer.INSTALL_RECEIPT
+            receipt.write_text(json.dumps(expected) + "\n", encoding="utf-8")
+            smoke_installer.verify_install_receipt(receipt, target, version)
+
+            receipt.write_text(
+                json.dumps({**expected, "unexpected": True}) + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "install receipt mismatch"):
+                smoke_installer.verify_install_receipt(receipt, target, version)
+
+        for installer in release.INSTALLER_ASSETS.values():
+            text = installer.read_text(encoding="utf-8")
+            for marker in (
+                ".kendr-opt-install.json",
+                "schema_version",
+                "kendr.install/v1",
+                "Kendr-AI/Kendr-Optimizer",
+                "github-release",
+                "preview",
+            ):
+                self.assertIn(marker, text, f"{installer.name} omitted {marker}")
+            self.assertIn("KENDR_INSTALLER_TEST_MODE", text)
+            self.assertIn("127", text)
+            self.assertIn("github.com/", text)
+
     def test_workflow_actions_are_pinned_and_release_notes_exist(self) -> None:
         workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         references = re.findall(r"\buses:\s+[^@\s]+@([^\s#]+)", workflow)
@@ -147,6 +202,12 @@ class CliReleaseTests(unittest.TestCase):
         self.assertIn('gh release view "${GITHUB_REF_NAME}"', draft_verification)
         self.assertNotIn("releases/tags/", draft_verification)
         self.assertIn('release["isDraft"] is True', draft_verification)
+
+        publication = workflow.split("- name: Publish prerelease", maxsplit=1)[1]
+        self.assertIn('release["immutable"] is True', publication)
+        self.assertIn('gh release delete "${GITHUB_REF_NAME}" --yes', publication)
+        self.assertIn("--features update-test-server", workflow)
+        self.assertIn("--all-features", workflow)
 
     def test_version_validation_rejects_unsafe_values(self) -> None:
         for version in ("0.1.1", "1.2.3-rc.1", "1.2.3+build.7"):

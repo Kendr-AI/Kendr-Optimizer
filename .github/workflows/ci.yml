@@ -43,7 +43,7 @@ jobs:
         run: python3 -m unittest discover -s scripts/tests -p 'test_*.py'
       - name: Check release and installer syntax
         run: |
-          python3 -m py_compile scripts/build_third_party_licenses.py scripts/cli_release.py scripts/smoke_installer.py
+          python3 -m py_compile scripts/build_third_party_licenses.py scripts/cli_release.py scripts/smoke_installer.py scripts/smoke_update.py
           shellcheck --shell=sh install/kendr-opt-installer.sh
       - name: Analyze PowerShell installer
         shell: pwsh
@@ -69,8 +69,8 @@ jobs:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
       - run: cargo fmt --all -- --check
-      - run: cargo clippy --workspace --all-targets -- -D warnings
-      - run: cargo test --workspace --locked
+      - run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - run: cargo test --workspace --all-features --locked
 
   evidence-and-docs:
     runs-on: ubuntu-latest
@@ -256,6 +256,13 @@ jobs:
       - name: Build release binary
         shell: bash
         run: cargo build --release --locked --package kendr-optimizer-cli --target "${{ matrix.target }}"
+      - name: Build loopback-only self-update test fixture
+        shell: bash
+        run: |
+          cargo build --release --locked --package kendr-optimizer-cli \
+            --features update-test-server \
+            --target "${{ matrix.target }}" \
+            --target-dir target/update-smoke-fixture
       - name: Verify static Linux executable
         if: runner.os == 'Linux'
         shell: bash
@@ -277,6 +284,15 @@ jobs:
         shell: bash
         run: |
           python scripts/smoke_installer.py \
+            --archive "dist/${{ matrix.archive }}" \
+            --target "${{ matrix.target }}" \
+            --version "${RELEASE_VERSION}"
+      - name: Exercise verified native self-update and rollback
+        shell: bash
+        run: |
+          python scripts/smoke_update.py \
+            --binary "target/${{ matrix.target }}/release/${{ matrix.binary }}" \
+            --test-updater-binary "target/update-smoke-fixture/${{ matrix.target }}/release/${{ matrix.binary }}" \
             --archive "dist/${{ matrix.archive }}" \
             --target "${{ matrix.target }}" \
             --version "${RELEASE_VERSION}"
@@ -376,13 +392,36 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          published_json="${RUNNER_TEMP}/published-release.json"
+          cleanup_mutable_release() {
+            trap - ERR
+            if test -f "${published_json}" && python - "${published_json}" "${GITHUB_REF_NAME}" <<'PY'
+          import json
+          import sys
+
+          with open(sys.argv[1], encoding="utf-8") as stream:
+              release = json.load(stream)
+          raise SystemExit(
+              0
+              if release.get("tag_name") == sys.argv[2]
+              and release.get("immutable") is False
+              else 1
+          )
+          PY
+            then
+              echo "Removing mutable release rejected by the publication gate" >&2
+              gh release delete "${GITHUB_REF_NAME}" --yes
+            fi
+          }
+          trap cleanup_mutable_release ERR
           gh release edit "${GITHUB_REF_NAME}" --draft=false --prerelease --latest=false
           gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${GITHUB_REF_NAME}" \
-            > "${RUNNER_TEMP}/published-release.json"
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            > "${published_json}"
           python scripts/cli_release.py verify-github-assets \
             --directory dist \
-            --release-json "${RUNNER_TEMP}/published-release.json"
-          python - "${RUNNER_TEMP}/published-release.json" <<'PY'
+            --release-json "${published_json}"
+          python - "${published_json}" <<'PY'
           import json
           import sys
 
@@ -391,4 +430,6 @@ jobs:
           assert release["draft"] is False
           assert release["prerelease"] is True
           assert release["published_at"] is not None
+          assert release["immutable"] is True
           PY
+          trap - ERR

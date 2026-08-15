@@ -11,7 +11,7 @@
       "name": "kendr-optimizer",
       "source": "./integrations/claude-code",
       "description": "Optimizes supported Claude Code tool results through the local Kendr service",
-      "version": "0.1.2"
+      "version": "0.1.3"
     }
   ]
 }
