@@ -1408,10 +1408,21 @@ fn install_verified_candidate(
 #[cfg(unix)]
 fn replace_executable(
     candidate: &Path,
-    _executable: &Path,
+    executable: &Path,
     _destination_is_running: bool,
 ) -> io::Result<()> {
-    self_replace::self_replace(candidate)
+    let parent = executable
+        .parent()
+        .ok_or_else(|| io::Error::other("update executable has no parent directory"))?;
+    let permissions = fs::metadata(executable)?.permissions();
+    let mut staged = NamedTempFile::new_in(parent)?;
+    let mut source = File::open(candidate)?;
+    io::copy(&mut source, staged.as_file_mut())?;
+    staged.flush()?;
+    fs::set_permissions(staged.path(), permissions)?;
+    staged.as_file().sync_all()?;
+    staged.persist(executable).map_err(|error| error.error)?;
+    Ok(())
 }
 
 #[cfg(windows)]
@@ -2057,6 +2068,36 @@ mod tests {
         receipt["version"] = serde_json::Value::String("99.0.0".to_owned());
         fs::write(path, serde_json::to_vec(&receipt).unwrap()).unwrap();
         assert!(valid_install_receipt(&executable).is_err());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn unix_replace_uses_the_explicit_path_for_install_and_rollback() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let directory = tempfile::tempdir().unwrap();
+        let executable = directory.path().join("kendr-opt");
+        let candidate = directory.path().join("candidate");
+        let backup = directory.path().join("backup");
+        fs::write(&executable, b"old").unwrap();
+        fs::set_permissions(&executable, fs::Permissions::from_mode(0o751)).unwrap();
+        fs::write(&candidate, b"new").unwrap();
+        fs::write(&backup, b"old").unwrap();
+
+        replace_executable(&candidate, &executable, true).unwrap();
+        assert_eq!(fs::read(&executable).unwrap(), b"new");
+        assert_eq!(
+            fs::metadata(&executable).unwrap().permissions().mode() & 0o777,
+            0o751
+        );
+
+        replace_executable(&backup, &executable, false).unwrap();
+        assert_eq!(fs::read(&executable).unwrap(), b"old");
+        assert_eq!(
+            fs::metadata(&executable).unwrap().permissions().mode() & 0o777,
+            0o751
+        );
+        assert_eq!(fs::read_dir(directory.path()).unwrap().count(), 3);
     }
 
     #[cfg(windows)]
