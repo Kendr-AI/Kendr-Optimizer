@@ -20,7 +20,7 @@ LLM agent workloads. It reduces redundant prompt, context, and tool-output
 payloads locally, then hands control back to the host that already owns the
 model, credentials, routing, streaming, retries, and billing.
 
-**Current pre-alpha release:** `0.1.2` · **Core:** Rust · **License:** Apache-2.0
+**Status:** pre-alpha (`0.1.2`) · **Core:** Rust · **License:** Apache-2.0
 
 [Install](#install-in-two-commands) · [Watch the demo](#60-second-claude-code-demo) ·
 [Inspect every benchmark row](#complete-preservation-gated-ranking) ·
