@@ -53,7 +53,7 @@ kendr-opt run hermes
 `kendr-opt` writes the dependency-free source package to Hermes's user plugin
 directory, enables it with Hermes's own CLI, and manages the optimizer process.
 The GitHub Release also carries
-`kendr_optimizer_hermes-0.1.3-py3-none-any.whl` for managed Python environment
+`kendr_optimizer_hermes-0.1.4-py3-none-any.whl` for managed Python environment
 deployment. No PyPI publication is required.
 
 ## Configuration

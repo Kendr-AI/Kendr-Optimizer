@@ -2,14 +2,53 @@ use std::collections::HashSet;
 use std::fs;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr, TcpStream};
 use std::path::PathBuf;
-use std::process::{Command, Output};
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::process::{Command, Output, Stdio};
+use std::thread;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 fn run_cli(arguments: &[&str]) -> Output {
     Command::new(env!("CARGO_BIN_EXE_kendr-opt"))
         .args(arguments)
         .output()
         .expect("kendr-opt should execute")
+}
+
+#[test]
+fn no_arguments_prints_plain_long_help_when_output_is_not_a_terminal() {
+    let output = run_cli(&[]);
+    assert!(output.status.success(), "no-argument help failed");
+    assert!(output.stderr.is_empty(), "no-argument help wrote stderr");
+    let stdout = String::from_utf8(output.stdout).expect("help should be UTF-8");
+    assert!(stdout.contains("Usage:"));
+    assert!(stdout.contains("dashboard"));
+    assert!(stdout.contains("tui"));
+    assert!(!stdout.contains('\u{1b}'), "piped help contained ANSI");
+}
+
+#[test]
+fn explicit_dashboard_requires_an_interactive_terminal() {
+    let output = run_cli(&["dashboard"]);
+    assert!(!output.status.success(), "piped dashboard unexpectedly ran");
+    assert!(output.stdout.is_empty(), "failed dashboard wrote stdout");
+    let stderr = String::from_utf8(output.stderr).expect("error should be UTF-8");
+    assert!(stderr.contains("requires interactive stdin and stdout"));
+    assert!(!stderr.contains('\u{1b}'), "piped error contained ANSI");
+}
+
+#[test]
+fn no_color_presence_wins_over_forced_color() {
+    let output = Command::new(env!("CARGO_BIN_EXE_kendr-opt"))
+        .arg("--help")
+        .env("CLICOLOR_FORCE", "1")
+        .env("NO_COLOR", "")
+        .env_remove("CI")
+        .env_remove("GITHUB_ACTIONS")
+        .env_remove("TERM")
+        .output()
+        .expect("kendr-opt --help should execute");
+    assert!(output.status.success());
+    assert!(!output.stdout.contains(&0x1b));
+    assert!(!output.stderr.contains(&0x1b));
 }
 
 #[test]
@@ -91,6 +130,53 @@ fn setup_list_is_read_only_and_names_supported_harnesses() {
         assert!(stdout.contains(name), "setup list omitted {name}");
     }
     assert!(stdout.contains("OpenAI's coding CLI has no supported"));
+    assert!(
+        !stdout.contains('\u{1b}'),
+        "piped setup list contained ANSI"
+    );
+}
+
+#[test]
+fn serve_writes_plain_logs_to_stderr() {
+    let root = temporary_directory("serve-log-streams");
+    fs::create_dir_all(&root).unwrap();
+    let stdout_path = root.join("stdout.log");
+    let stderr_path = root.join("stderr.log");
+    let stdout = fs::File::create(&stdout_path).unwrap();
+    let stderr = fs::File::create(&stderr_path).unwrap();
+    let mut child = Command::new(env!("CARGO_BIN_EXE_kendr-opt"))
+        .args(["serve", "--bind", "127.0.0.1:0"])
+        .env("RUST_LOG", "info")
+        .stdin(Stdio::null())
+        .stdout(Stdio::from(stdout))
+        .stderr(Stdio::from(stderr))
+        .spawn()
+        .expect("kendr-opt serve should start");
+
+    let mut ready = false;
+    for _ in 0..80 {
+        thread::sleep(Duration::from_millis(25));
+        let log = fs::read_to_string(&stderr_path).unwrap_or_default();
+        if log.contains("transform-only service listening") {
+            ready = true;
+            break;
+        }
+        if let Some(status) = child.try_wait().unwrap() {
+            panic!("kendr-opt serve exited before listening: {status}; {log}");
+        }
+    }
+    let _ = child.kill();
+    let _ = child.wait();
+
+    let stdout = fs::read(&stdout_path).unwrap();
+    let stderr = fs::read_to_string(&stderr_path).unwrap();
+    assert!(ready, "serve did not emit its listening log: {stderr}");
+    assert!(stdout.is_empty(), "serve logs contaminated stdout");
+    assert!(
+        !stderr.contains('\u{1b}'),
+        "non-TTY serve log contained ANSI"
+    );
+    fs::remove_dir_all(root).unwrap();
 }
 
 #[test]

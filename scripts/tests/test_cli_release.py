@@ -117,6 +117,7 @@ class CliReleaseTests(unittest.TestCase):
             release.archive_name(target) for target in release.SUPPORTED_TARGETS
         }
         expected_assets.update(release.INSTALLER_ASSETS)
+        expected_assets.update(release.PUBLICATION_ASSETS)
         expected_assets.update(release.adapter_assets())
         expected_assets.add("SHA256SUMS")
         self.assertEqual(release.expected_release_assets(), expected_assets)
@@ -250,6 +251,19 @@ class CliReleaseTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "checksum mismatch"):
                 release.verify_directory(first, version)
 
+    def test_whitepaper_is_copied_byte_for_byte_into_release_assets(self) -> None:
+        name = release.WHITEPAPER_ASSET_NAME
+        source = release.PUBLICATION_ASSETS[name]
+        self.assertTrue(source.is_file(), "canonical whitepaper PDF is missing")
+        self.assertIn(name, release.expected_release_assets())
+
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory) / name
+            release.copy_publication_assets(Path(directory))
+            self.assertTrue(destination.is_file())
+            self.assertEqual(destination.read_bytes(), source.read_bytes())
+            self.assertEqual(release.sha256(destination), release.sha256(source))
+
     def test_archive_verification_rejects_duplicate_members(self) -> None:
         version = "0.1.1"
         with tempfile.TemporaryDirectory() as directory:
@@ -357,6 +371,7 @@ class CliReleaseTests(unittest.TestCase):
             release.verify_archive(output, version, target)
 
         release.copy_installers(directory)
+        release.copy_publication_assets(directory)
         for name in release.adapter_assets(version) - {
             release.nanoclaw_asset_name(version)
         }:

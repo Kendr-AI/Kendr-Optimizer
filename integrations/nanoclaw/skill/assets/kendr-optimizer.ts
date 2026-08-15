@@ -104,7 +104,7 @@ export async function optimizeNanoClawPrompt(
       ],
       tools: [],
       output_contract: null,
-      metadata: { host: 'nanoclaw', adapter_version: '0.1.3', surface: 'inbound_prompt_string' },
+      metadata: { host: 'nanoclaw', adapter_version: '0.1.4', surface: 'inbound_prompt_string' },
     },
     target: {
       tokenizer_profile: tokenizerProfile(),
@@ -188,7 +188,7 @@ async function postLoopbackJson(url: string, body: string, timeoutMs: number): P
           'content-type': 'application/json',
           accept: 'application/json',
           'content-length': String(Buffer.byteLength(body, 'utf8')),
-          'user-agent': 'kendr-optimizer-nanoclaw/0.1.3',
+          'user-agent': 'kendr-optimizer-nanoclaw/0.1.4',
         },
       },
       (response) => {

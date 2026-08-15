@@ -36,7 +36,7 @@ claude plugin install kendr-optimizer@kendr
 ```
 
 The GitHub Release also carries
-`kendr-optimizer-claude-code-0.1.3.tgz` for managed package deployment. No npm
+`kendr-optimizer-claude-code-0.1.4.tgz` for managed package deployment. No npm
 registry publication is required.
 
 If an organization configures `allowedHttpHookUrls`, its policy must allow the three exact `http://127.0.0.1:7332/hooks/claude-code/...` URLs in `hooks/hooks.json`.

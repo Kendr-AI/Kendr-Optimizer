@@ -174,7 +174,7 @@ def encode_provider_request(
             "output_contract": output_contract,
             "metadata": {
                 "host": "hermes-agent",
-                "adapter_version": "0.1.3",
+                "adapter_version": "0.1.4",
                 "api_mode": api_mode if isinstance(api_mode, str) else "unknown",
             },
         },
@@ -252,7 +252,7 @@ def encode_tool_result(
             ],
             "tools": [],
             "output_contract": None,
-            "metadata": {"host": "hermes-agent", "adapter_version": "0.1.3"},
+            "metadata": {"host": "hermes-agent", "adapter_version": "0.1.4"},
         },
         "target": {
             "tokenizer_profile": settings.tokenizer_profile,

@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
-$DefaultVersion = 'v0.1.3'
+$DefaultVersion = 'v0.1.4'
 $Repository = 'Kendr-AI/Kendr-Optimizer'
 
 if ([string]::IsNullOrWhiteSpace($Version)) {

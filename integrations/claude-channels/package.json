@@ -1,6 +1,6 @@
 {
   "name": "@kendr/optimizer-claude-channels",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Source-side Claude Code Channels notification optimizer for Kendr Optimizer",
   "type": "module",
   "license": "Apache-2.0",

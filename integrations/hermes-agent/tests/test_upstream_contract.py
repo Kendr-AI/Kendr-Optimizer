@@ -69,7 +69,7 @@ class UpstreamContractTests(unittest.TestCase):
             host_plugins._plugin_manager = manager
             manager_installed = True
             ctx = host_plugins.PluginContext(
-                host_plugins.PluginManifest(name="kendr-optimizer", version="0.1.3"),
+                host_plugins.PluginManifest(name="kendr-optimizer", version="0.1.4"),
                 manager,
             )
             plugin.register(ctx)

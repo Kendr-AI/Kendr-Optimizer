@@ -7,6 +7,46 @@ once its pre-alpha contracts are declared stable.
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-08-16
+
+### Added
+
+- `kendr-opt dashboard`, with the visible `tui` alias, provides a read-only
+  five-panel terminal guide for quick start, commands, harnesses, updates, and
+  trust boundaries. It is responsive, keyboard navigable, and restores the
+  terminal after leaving its confined alternate-screen session.
+- Running `kendr-opt` without a subcommand opens the dashboard only when both
+  standard input and standard output are terminals; non-interactive invocation
+  prints long help and exits successfully instead.
+- A standalone CLI reference documents command, output, exit-code, environment,
+  and interactive behavior without requiring users to infer the contract from
+  shell help.
+- The publication-formatted technical whitepaper is a first-class GitHub
+  Release asset covered by `SHA256SUMS` and GitHub's recorded SHA-256 digest;
+  CI also checks its embedded source digest against the authoritative Markdown.
+
+### Changed
+
+- Human-facing `setup`, `setup --list`, runtime-error, and dashboard presentation
+  uses the Kendr saffron palette when the relevant stream supports color. Labels
+  remain meaningful in plain output, and `NO_COLOR` or `TERM=dumb` disables
+  decoration.
+- Machine-readable JSON, version output, update JSON, hosted-harness streams,
+  and non-terminal service logs remain undecorated; `serve` logs are emitted on
+  standard error.
+- Bundled adapter package metadata, runtime version identifiers, marketplace
+  metadata, and manual-install artifact names are synchronized at `0.1.4`.
+
+### Security
+
+- The dashboard is informational: it performs no provider, install, update, or
+  network action. Existing explicit update verification and replacement gates
+  remain authoritative.
+- The downloadable whitepaper's checksum and source-identity gates detect
+  publication drift inside the GitHub trust boundary; they are not a maintainer
+  signature or an operating-system code signature. Markdown remains the
+  authoritative source.
+
 ## [0.1.3] - 2026-08-16
 
 ### Added

@@ -1,5 +1,7 @@
+mod dashboard;
 mod server;
 mod setup;
+mod ui;
 mod update;
 
 use std::error::Error;
@@ -9,7 +11,7 @@ use std::io::{self, Read};
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
-use clap::{Parser, Subcommand};
+use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
 use kendr_optimizer_contracts::{OptimizeRequest, RecoveryCapsule, UsageObservation};
 use kendr_optimizer_core::Optimizer;
 use serde::Serialize;
@@ -21,11 +23,14 @@ use serde::de::DeserializeOwned;
 #[command(version)]
 struct Cli {
     #[command(subcommand)]
-    command: Command,
+    command: Option<Command>,
 }
 
 #[derive(Debug, Subcommand)]
 enum Command {
+    /// Open the read-only Kendr command and trust dashboard.
+    #[command(visible_alias = "tui")]
+    Dashboard,
     /// Analyze an envelope in shadow mode and emit a hypothetical receipt.
     Analyze {
         #[arg(short, long, default_value = "-")]
@@ -119,20 +124,31 @@ enum Command {
 #[tokio::main]
 async fn main() {
     if let Err(error) = run().await {
-        eprintln!("kendr-opt: {error}");
+        ui::print_error(error.as_ref());
         std::process::exit(1);
     }
 }
 
 async fn run() -> Result<(), Box<dyn Error>> {
-    let cli = Cli::parse();
+    let matches = cli_command().get_matches();
+    let cli = Cli::from_arg_matches(&matches)?;
+    let Some(command) = cli.command else {
+        if ui::dashboard_available() {
+            return dashboard::run();
+        }
+        let mut command = cli_command();
+        command.print_long_help()?;
+        println!();
+        return Ok(());
+    };
     if matches!(
-        &cli.command,
+        &command,
         Command::Setup { list: false, .. } | Command::Run { .. }
     ) {
         update::maybe_print_update_notice().await;
     }
-    match cli.command {
+    match command {
+        Command::Dashboard => dashboard::run()?,
         Command::Analyze {
             input,
             output,
@@ -184,11 +200,10 @@ async fn run() -> Result<(), Box<dyn Error>> {
             force,
         } => {
             if list {
-                println!("{}", setup::support_text());
+                ui::print_setup_list(setup::support_text())?;
             } else {
-                for message in setup::setup(harness, force)? {
-                    println!("{message}");
-                }
+                let messages = setup::setup(harness, force)?;
+                ui::print_setup_messages(&messages)?;
             }
         }
         Command::Run {
@@ -206,6 +221,12 @@ async fn run() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+fn cli_command() -> clap::Command {
+    Cli::command()
+        .styles(ui::CLAP_STYLES)
+        .color(ui::clap_color_choice())
 }
 
 fn read_json<T: DeserializeOwned>(path: &str) -> Result<T, Box<dyn Error>> {

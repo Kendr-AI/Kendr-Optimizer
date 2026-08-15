@@ -51,7 +51,7 @@ class SidecarClient:
                 headers={
                     "content-type": "application/json",
                     "accept": "application/json",
-                    "user-agent": "kendr-optimizer-hermes/0.1.3",
+                    "user-agent": "kendr-optimizer-hermes/0.1.4",
                 },
             )
             with self._opener.open(

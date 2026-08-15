@@ -47,7 +47,7 @@ kendr-opt run openclaw
 OpenClaw's plugin installer, selects the `contextEngine` slot, and manages the
 optimizer process. It refuses to replace another context engine unless
 `--force` is supplied. The GitHub Release also carries
-`kendr-optimizer-openclaw-0.1.3.tgz` for managed package deployment.
+`kendr-optimizer-openclaw-0.1.4.tgz` for managed package deployment.
 
 ## Configure OpenClaw
 

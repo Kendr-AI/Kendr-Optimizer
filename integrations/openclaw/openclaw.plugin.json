@@ -2,7 +2,7 @@
   "id": "kendr-optimizer",
   "name": "KendrOptimizer",
   "description": "Optimizes assembled model context through a loopback-only KendrOptimizer transform service",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "kind": "context-engine",
   "activation": {
     "onStartup": true
